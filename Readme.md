@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг»
 
-* Студент: [Nikita Nikolaev](https://up.htmlacademy.ru/javascript/22/user/1469935).
-* Наставник: `Неизвестно`.
+- Студент: [Nikita Nikolaev](https://up.htmlacademy.ru/javascript/22/user/1469935).
+- Наставник: [Андрей Карякин](https://htmlacademy.ru/profile/id133011).
 
 ---
 
