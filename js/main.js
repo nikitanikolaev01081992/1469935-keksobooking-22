@@ -5,7 +5,7 @@ const getRandomFloat = (min, max, precision = 2) => {
     max = temp;
   }
 
-  let randNum = Math.random() * (max - min + 0.001) + min;
+  let randNum = Math.random() * (max - min) + min;
   randNum = randNum > max ? max : randNum;
 
   return parseFloat(randNum.toFixed(precision));
@@ -17,3 +17,5 @@ const getRandomInt = (min, max) => {
 
   return getRandomFloat(min, max, 0);
 };
+
+getRandomInt();
