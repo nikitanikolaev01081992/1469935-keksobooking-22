@@ -13,6 +13,9 @@ const PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg',
 ];
 
+const AVATAR_BASE_URL = 'img/avatars/user<<NUM>>.png';
+const MAX_ID = 8;
+
 const LatitudeRanges = {
   MIN: 35.65,
   MAX: 35.7,
@@ -24,14 +27,31 @@ const LongitudeRanges = {
 };
 
 const MinPricesByType = {
-  palace: 10000,
-  house: 5000,
-  flat: 1000,
-  bungalow: 0,
+  PALACE: 10000,
+  HOUSE: 5000,
+  FLAT: 1000,
+  BUNGALOW: 0,
 };
 
 //-----------------------------------------------------------------------
 // DATA GENERATOR
+
+const getRandAvatarUrl = (baseUrl, maxId) => {
+  if (
+    (typeof baseUrl !== 'string' && !(baseUrl instanceof String)) ||
+    !baseUrl.includes('<<NUM>>') ||
+    isNaN(maxId) ||
+    maxId < 1
+  ) {
+    throw new Error('getRandAvatar: неверные входные параметры');
+  }
+
+  const randId = util.getRandomInt(1, maxId);
+  const idStr = randId < 10 ? `0${randId}` : `${randId}`;
+
+  return baseUrl.replace('<<NUM>>', idStr);
+};
+
 const getRandDataObject = (id = 1) => {
   const location = {
     x: util.getRandomFloat(LatitudeRanges.MIN, LatitudeRanges.MAX, 5),
@@ -39,18 +59,16 @@ const getRandDataObject = (id = 1) => {
   };
 
   const type = util.getRandElemFromArray(TYPE);
-  const price = util.getRandomInt(MinPricesByType[type], PRICE_MAX);
+  const price = util.getRandomInt(MinPricesByType[type.toUpperCase()], PRICE_MAX);
 
   const rooms = util.getRandomInt(1, ROOMS_MAX);
   const guests = util.getRandomInt(1, rooms); //looks like 1 room can have max 1 guest
 
   const checkin = util.getRandElemFromArray(TIME);
-  // const availabeTimes = TIME.slice(TIME.indexOf(checkin)); //we can do this bevause of order in array
-  const checkout = checkin;
 
   return {
     author: {
-      avatar: `img/avatars/user0${util.getRandomInt(1, 8)}.png`,
+      avatar: getRandAvatarUrl(AVATAR_BASE_URL, MAX_ID),
     },
     offer: {
       title: `Title ${id}`,
@@ -60,7 +78,7 @@ const getRandDataObject = (id = 1) => {
       rooms,
       guests,
       checkin,
-      checkout,
+      checkout: checkin,
       features: util.getRandArrayFromValues(FEATURES),
       description: 'Some description',
       photos: util.getRandArrayFromValues(PHOTOS),
@@ -75,8 +93,8 @@ const generateDummyData = (counts = 10) => {
   }
 
   let dummyData = [];
-  for (let i = 0; i < counts; i++) {
-    dummyData.push(getRandDataObject(i + 1));
+  for (let i = 1; i <= counts; i++) {
+    dummyData.push(getRandDataObject(i));
   }
 
   return dummyData;

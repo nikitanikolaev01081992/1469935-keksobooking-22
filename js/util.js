@@ -4,15 +4,9 @@ const getRandomInt = (min, max) => {
     throw new Error('getRandomInt: Неверные входные параметры');
   }
 
-  let localMin, localMax;
-  if (min > max) {
-    [localMax, localMin] = [Math.ceil(min), Math.floor(max)];
-  } else {
-    [localMin, localMax] = [Math.ceil(min), Math.floor(max)];
-  }
-
+  let [localMin, localMax] =
+    min > max ? [Math.ceil(max), Math.floor(min)] : [Math.ceil(min), Math.floor(max)];
   const randValue = Math.random();
-  //   const randValue = 0.9999999999;
 
   return Math.floor(randValue * (localMax - localMin + 1) + localMin);
 };
@@ -31,11 +25,8 @@ const getRandomFloat = (min, max, precision = 2) => {
 //-----------------------------------------------------------------------
 // function returns random value from array
 const getRandElemFromArray = (elements) => {
-  if (!Array.isArray(elements)) {
+  if (!Array.isArray(elements) || elements.length === 0) {
     throw new Error('getRandElemFromArr: Неверные входные параметры');
-  }
-  if (elements.length === 0) {
-    return undefined;
   }
 
   return elements[getRandomInt(0, elements.length - 1)];
