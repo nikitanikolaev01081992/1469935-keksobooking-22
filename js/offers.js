@@ -17,8 +17,6 @@ const IMAGE_ALT = 'Фотография жилья';
 
 //-----------------------------------------------------------------------
 //function returns children of given DOM offer
-const offerTemplate = document.querySelector('#card').content.querySelector('.popup');
-
 const getOfferDomChildren = (offer) => {
   return {
     avatar: offer.querySelector('.popup__avatar'),
@@ -86,6 +84,8 @@ const addOfferTextContent = (domElem, content) => {
 
 //-----------------------------------------------------------------------
 //function returns DOM element representing offer
+const offerTemplate = document.querySelector('#card').content.querySelector('.popup');
+
 const getDomOffer = (offerData) => {
   if (!offerData || !offerData.author || !offerData.offer) {
     throw new Error('getDomOffer: Неверные входные параметры');
