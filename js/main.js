@@ -1,3 +1,1 @@
-import { generateDummyData } from './data.js';
-
-generateDummyData();
+import './offers.js';

@@ -42,4 +42,10 @@ const getRandArrayFromValues = (values) => {
   return values.filter(() => getRandomInt(0, 100) > 50);
 };
 
-export { getRandomInt, getRandomFloat, getRandElemFromArray, getRandArrayFromValues };
+//-----------------------------------------------------------------------
+// function hides dom element
+const hideElement = (element) => {
+  element.style.display = 'none';
+};
+
+export { getRandomInt, getRandomFloat, getRandElemFromArray, getRandArrayFromValues, hideElement };
