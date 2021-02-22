@@ -45,7 +45,7 @@ const getRandArrayFromValues = (values) => {
 //-----------------------------------------------------------------------
 // function hides dom element
 const hideElement = (element) => {
-  element.style.display = 'none';
+  element.classList.add('hidden');
 };
 
 export { getRandomInt, getRandomFloat, getRandElemFromArray, getRandArrayFromValues, hideElement };

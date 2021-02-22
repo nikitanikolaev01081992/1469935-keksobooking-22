@@ -1,49 +1,71 @@
 //module for adding similar offers to DOM
 import { hideElement } from './util.js';
-import { generateDummyData } from './data.js';
 
 //-----------------------------------------------------------------------
 //Constants, Enums
-const TypeTranslations = {
-  PALACE: 'Дворец',
-  HOUSE: 'Дом',
-  FLAT: 'Квартира',
-  BUNGALOW: 'Бунгало',
+
+//this variable contains css classes of offer's template children
+const OFFER_CHILDREN = {
+  avatar: '.popup__avatar',
+  title: '.popup__title',
+  address: '.popup__text--address',
+  price: '.popup__text--price',
+  type: '.popup__type',
+  capacity: '.popup__text--capacity',
+  time: '.popup__text--time',
+  features: '.popup__features',
+  description: '.popup__description',
+  photos: '.popup__photos',
 };
 
-const IMAGE_WIDTH = 45;
-const IMAGE_HEIGHT = 45;
-const IMAGE_ALT = 'Фотография жилья';
+const TYPE_TRANSLATIONS = {
+  palace: 'Дворец',
+  house: 'Дом',
+  flat: 'Квартира',
+  bungalow: 'Бунгало',
+};
+
+const OFFER_TEMPLATE = document.querySelector('#card').content.querySelector('.popup');
+
+if (!OFFER_TEMPLATE) {
+  throw new Error('OFFER_TEMPLATE was not found!');
+}
 
 //-----------------------------------------------------------------------
-//function returns children of given DOM offer
-const getOfferDomChildren = (offer) => {
-  return {
-    avatar: offer.querySelector('.popup__avatar'),
-    title: offer.querySelector('.popup__title'),
-    address: offer.querySelector('.popup__text--address'),
-    price: offer.querySelector('.popup__text--price'),
-    type: offer.querySelector('.popup__type'),
-    capacity: offer.querySelector('.popup__text--capacity'),
-    time: offer.querySelector('.popup__text--time'),
-    features: offer.querySelector('.popup__features'),
-    description: offer.querySelector('.popup__description'),
-    photos: offer.querySelector('.popup__photos'),
-  };
+//function returns object with children of given DOM offer
+const getOfferNodeChildren = (offer) => {
+  let offerChildren = {};
+
+  for (const key of Object.keys(OFFER_CHILDREN)) {
+    const offerChildNode = offer.querySelector(OFFER_CHILDREN[key]);
+
+    if (!offerChildNode) {
+      throw new Error(`getOfferNodeChildren: '${OFFER_CHILDREN[key]}' was not found!`);
+    }
+
+    offerChildren[key] = offerChildNode;
+  }
+
+  return offerChildren;
 };
 
 //-----------------------------------------------------------------------
 //function returns Document Fragment with appended <li> items of features
-const getFeaturesFragment = (features) => {
-  if (!Array.isArray(features)) {
+const getFeaturesFragment = (container, features) => {
+  if (!container || !Array.isArray(features)) {
     throw new Error('getFeaturesFragment: Неверные входные параметры');
   }
 
   let fragment = document.createDocumentFragment();
+  const featureTemplate = container.querySelector('.popup__feature');
+
+  if (!featureTemplate) {
+    throw new Error('featureTemplate was not found!');
+  }
 
   features.forEach((item) => {
-    const domItem = document.createElement('li');
-    domItem.classList.add('popup__feature', `popup__feature--${item}`);
+    const domItem = featureTemplate.cloneNode(true);
+    domItem.classList.add(`popup__feature--${item}`);
     fragment.appendChild(domItem);
   });
 
@@ -52,20 +74,21 @@ const getFeaturesFragment = (features) => {
 
 //-----------------------------------------------------------------------
 //function returns Document Fragment with appended <img> items of photos
-const getPhotosFragment = (photos) => {
-  if (!Array.isArray(photos)) {
-    throw new Error('getFeaturesFragment: Неверные входные параметры');
+const getPhotosFragment = (container, photos) => {
+  if (!container || !Array.isArray(photos)) {
+    throw new Error('getPhotosFragment: Неверные входные параметры');
   }
 
   let fragment = document.createDocumentFragment();
+  const photoTemplate = container.querySelector('.popup__photo');
+
+  if (!photoTemplate) {
+    throw new Error('photoTemplate was not found!');
+  }
 
   photos.forEach((item) => {
-    const domItem = document.createElement('img');
-    domItem.classList.add('popup__photo');
+    const domItem = photoTemplate.cloneNode(true);
     domItem.src = item;
-    domItem.width = IMAGE_WIDTH;
-    domItem.height = IMAGE_HEIGHT;
-    domItem.alt = IMAGE_ALT;
     fragment.appendChild(domItem);
   });
 
@@ -83,26 +106,42 @@ const addOfferTextContent = (domElem, content) => {
 };
 
 //-----------------------------------------------------------------------
-//function returns DOM element representing offer
-const offerTemplate = document.querySelector('#card').content.querySelector('.popup');
+//function adds src url to dom element or hide element in case of empty src url
+const addOfferSrc = (domElem, src) => {
+  if (src) {
+    domElem.src = src;
+  } else {
+    hideElement(domElem);
+  }
+};
 
-const getDomOffer = (offerData) => {
+//-----------------------------------------------------------------------
+//function returns DOM element representing offer
+const getOfferNode = (offerData) => {
   if (!offerData || !offerData.author || !offerData.offer) {
-    throw new Error('getDomOffer: Неверные входные параметры');
+    throw new Error('getOfferNode: Неверные входные параметры');
   }
 
   const offer = offerData.offer;
-  const newDomOffer = offerTemplate.cloneNode(true);
-  const newDomOfferChildren = getOfferDomChildren(newDomOffer);
-
-  if (offerData.author.avatar) {
-    newDomOfferChildren.avatar.src = offerData.author.avatar;
-  } else {
-    hideElement(newDomOfferChildren.avatar);
-  }
+  const newDomOffer = OFFER_TEMPLATE.cloneNode(true);
+  const newDomOfferChildren = getOfferNodeChildren(newDomOffer);
 
   addOfferTextContent(newDomOfferChildren.title, offer.title);
   addOfferTextContent(newDomOfferChildren.address, offer.address);
+  addOfferTextContent(newDomOfferChildren.type, TYPE_TRANSLATIONS[offer.type]);
+  addOfferTextContent(newDomOfferChildren.description, offer.description);
+
+  const capacityText =
+    offer.rooms && offer.guests ? `${offer.rooms} комнаты для ${offer.guests} гостей` : '';
+  addOfferTextContent(newDomOfferChildren.capacity, capacityText);
+
+  const timeText =
+    offer.checkin && offer.checkout
+      ? `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`
+      : '';
+  addOfferTextContent(newDomOfferChildren.time, timeText);
+
+  addOfferSrc(newDomOfferChildren.avatar, offerData.author.avatar);
 
   if (offer.price) {
     newDomOfferChildren.price.innerHTML = `${offer.price} <span>₽/ночь</span>`;
@@ -110,32 +149,20 @@ const getDomOffer = (offerData) => {
     hideElement(newDomOfferChildren.price);
   }
 
-  addOfferTextContent(newDomOfferChildren.type, TypeTranslations[offer.type.toUpperCase()]);
-
-  if (offer.rooms && offer.guests) {
-    newDomOfferChildren.capacity.textContent = `${offer.rooms} комнаты для ${offer.guests} гостей`;
-  } else {
-    hideElement(newDomOfferChildren.capacity);
-  }
-
-  if (offer.checkin && offer.checkout) {
-    newDomOfferChildren.time.textContent = `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`;
-  } else {
-    hideElement(newDomOfferChildren.time);
-  }
-
   if (offer.features.length > 0) {
+    const featuresFragment = getFeaturesFragment(newDomOfferChildren.features, offer.features);
+
     newDomOfferChildren.features.innerHTML = '';
-    newDomOfferChildren.features.appendChild(getFeaturesFragment(offer.features));
+    newDomOfferChildren.features.appendChild(featuresFragment);
   } else {
     hideElement(newDomOfferChildren.features);
   }
 
-  addOfferTextContent(newDomOfferChildren.description, offer.description);
-
   if (offer.photos.length > 0) {
+    const protosFragment = getPhotosFragment(newDomOfferChildren.photos, offer.photos);
+
     newDomOfferChildren.photos.innerHTML = '';
-    newDomOfferChildren.photos.appendChild(getPhotosFragment(offer.photos));
+    newDomOfferChildren.photos.appendChild(protosFragment);
   } else {
     hideElement(newDomOfferChildren.photos);
   }
@@ -144,9 +171,6 @@ const getDomOffer = (offerData) => {
 };
 
 //-----------------------------------------------------------------------
-//adding offer to DOM
-const offersContainer = document.querySelector('.map__canvas');
-const dummyData = generateDummyData(1);
-const newDomOffer = getDomOffer(dummyData[0]);
+//export
 
-offersContainer.appendChild(newDomOffer);
+export { getOfferNode };
