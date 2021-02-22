@@ -63,9 +63,9 @@ const getFeaturesFragment = (container, features) => {
     throw new Error('featureTemplate не найден!');
   }
 
-  features.forEach((item) => {
+  features.forEach((featureData) => {
     const domItem = featureTemplate.cloneNode(true);
-    domItem.classList.add(`popup__feature--${item}`);
+    domItem.classList.add(`popup__feature--${featureData}`);
     fragment.appendChild(domItem);
   });
 
@@ -86,9 +86,9 @@ const getPhotosFragment = (container, photos) => {
     throw new Error('photoTemplate не найден!');
   }
 
-  photos.forEach((item) => {
+  photos.forEach((photoData) => {
     const domItem = photoTemplate.cloneNode(true);
-    domItem.src = item;
+    domItem.setAttribute('src', photoData);
     fragment.appendChild(domItem);
   });
 
@@ -107,9 +107,9 @@ const addOfferTextContent = (domElem, content) => {
 
 //-----------------------------------------------------------------------
 //function adds src url to dom element or hide element in case of empty src url
-const addOfferSrc = (domElem, src) => {
-  if (src) {
-    domElem.src = src;
+const addOfferSrc = (domElem, srcUrl) => {
+  if (srcUrl) {
+    domElem.setAttribute('src', srcUrl);
   } else {
     hideElement(domElem);
   }
@@ -170,6 +170,8 @@ const getOfferNode = (offerData) => {
   return newDomOffer;
 };
 
+//-----------------------------------------------------------------------
+//function returns document fragment with appended nodes of offers
 const getOffersFragment = (offers) => {
   if (!Array.isArray(offers)) {
     throw new Error('getOffersFragment: Неверные входные параметры');
