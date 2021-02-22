@@ -1,5 +1,5 @@
 import { generateDummyData } from './data.js';
-import { getOfferNode } from './offers.js';
+import { getOffersFragment } from './offers.js';
 
 //-----------------------------------------------------------------------
 // Constants
@@ -9,9 +9,8 @@ if (!OFFERS_CONTAINER) {
   throw new Error('OFFERS_CONTAINER was not found!');
 }
 
+const DUMMY_DATA = generateDummyData(1);
+
 //-----------------------------------------------------------------------
 // adding offer to DOM
-const dummyData = generateDummyData(1);
-const newDomOffer = getOfferNode(dummyData[0]);
-
-OFFERS_CONTAINER.appendChild(newDomOffer);
+OFFERS_CONTAINER.appendChild(getOffersFragment(DUMMY_DATA));

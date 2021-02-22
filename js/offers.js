@@ -25,7 +25,7 @@ const TYPE_TRANSLATIONS = {
   bungalow: 'Бунгало',
 };
 
-const OFFER_TEMPLATE = document.querySelector('#card').content.querySelector('.popup');
+const OFFER_TEMPLATE = document.querySelector('#card');
 
 if (!OFFER_TEMPLATE) {
   throw new Error('OFFER_TEMPLATE was not found!');
@@ -123,7 +123,7 @@ const getOfferNode = (offerData) => {
   }
 
   const offer = offerData.offer;
-  const newDomOffer = OFFER_TEMPLATE.cloneNode(true);
+  const newDomOffer = OFFER_TEMPLATE.content.cloneNode(true);
   const newDomOfferChildren = getOfferNodeChildren(newDomOffer);
 
   addOfferTextContent(newDomOfferChildren.title, offer.title);
@@ -170,7 +170,16 @@ const getOfferNode = (offerData) => {
   return newDomOffer;
 };
 
+const getOffersFragment = (offers) => {
+  const fragment = document.createDocumentFragment();
+
+  offers.forEach((offerData) => {
+    fragment.appendChild(getOfferNode(offerData));
+  });
+
+  return fragment;
+};
+
 //-----------------------------------------------------------------------
 //export
-
-export { getOfferNode };
+export { getOffersFragment };
