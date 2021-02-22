@@ -6,7 +6,7 @@ import { getOffersFragment } from './offers.js';
 const OFFERS_CONTAINER = document.querySelector('.map__canvas');
 
 if (!OFFERS_CONTAINER) {
-  throw new Error('OFFERS_CONTAINER was not found!');
+  throw new Error('OFFERS_CONTAINER не найден!');
 }
 
 const DUMMY_DATA = generateDummyData(1);

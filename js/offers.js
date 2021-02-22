@@ -28,7 +28,7 @@ const TYPE_TRANSLATIONS = {
 const OFFER_TEMPLATE = document.querySelector('#card');
 
 if (!OFFER_TEMPLATE) {
-  throw new Error('OFFER_TEMPLATE was not found!');
+  throw new Error('OFFER_TEMPLATE не найден!');
 }
 
 //-----------------------------------------------------------------------
@@ -40,7 +40,7 @@ const getOfferNodeChildren = (offer) => {
     const offerChildNode = offer.querySelector(OFFER_CHILDREN[key]);
 
     if (!offerChildNode) {
-      throw new Error(`getOfferNodeChildren: '${OFFER_CHILDREN[key]}' was not found!`);
+      throw new Error(`getOfferNodeChildren: '${OFFER_CHILDREN[key]}' не найден!`);
     }
 
     offerChildren[key] = offerChildNode;
@@ -60,7 +60,7 @@ const getFeaturesFragment = (container, features) => {
   const featureTemplate = container.querySelector('.popup__feature');
 
   if (!featureTemplate) {
-    throw new Error('featureTemplate was not found!');
+    throw new Error('featureTemplate не найден!');
   }
 
   features.forEach((item) => {
@@ -83,7 +83,7 @@ const getPhotosFragment = (container, photos) => {
   const photoTemplate = container.querySelector('.popup__photo');
 
   if (!photoTemplate) {
-    throw new Error('photoTemplate was not found!');
+    throw new Error('photoTemplate не найден!');
   }
 
   photos.forEach((item) => {
@@ -171,6 +171,10 @@ const getOfferNode = (offerData) => {
 };
 
 const getOffersFragment = (offers) => {
+  if (!Array.isArray(offers)) {
+    throw new Error('getOffersFragment: Неверные входные параметры');
+  }
+
   const fragment = document.createDocumentFragment();
 
   offers.forEach((offerData) => {
