@@ -48,4 +48,46 @@ const hideElement = (element) => {
   element.classList.add('hidden');
 };
 
-export { getRandomInt, getRandomFloat, getRandElemFromArray, getRandArrayFromValues, hideElement };
+//-----------------------------------------------------------------------
+//function adds text content to dom element or hide element in case of empty content
+const addNodeTextContent = (node, content) => {
+  if (content) {
+    node.textContent = content;
+  } else {
+    hideElement(node);
+  }
+};
+
+//-----------------------------------------------------------------------
+//function adds src url to dom element or hide element in case of empty src url
+const addNodeSrc = (node, srcUrl) => {
+  if (srcUrl) {
+    node.setAttribute('src', srcUrl);
+  } else {
+    hideElement(node);
+  }
+};
+
+//-----------------------------------------------------------------------
+//function return pluralized string
+const pluralize = (count, variants) => {
+  const countAbs = Math.abs(count) % 100;
+  const count2 = count % 10;
+  if (countAbs > 10 && countAbs < 20) return variants[2];
+  if (count2 > 1 && count2 < 5) return variants[1];
+  if (count2 === 1) return variants[0];
+
+  return variants[2];
+};
+
+// prettier-ignore
+export {
+  getRandomInt,
+  getRandomFloat,
+  getRandElemFromArray,
+  getRandArrayFromValues,
+  hideElement,
+  addNodeTextContent,
+  addNodeSrc,
+  pluralize
+};

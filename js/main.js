@@ -1,5 +1,5 @@
 import { generateDummyData } from './data.js';
-import { getOffersFragment } from './offers.js';
+import { getOfferNode } from './offers.js';
 
 //-----------------------------------------------------------------------
 // Constants
@@ -13,4 +13,4 @@ const DUMMY_DATA = generateDummyData(1);
 
 //-----------------------------------------------------------------------
 // adding offer to DOM
-OFFERS_CONTAINER.appendChild(getOffersFragment(DUMMY_DATA));
+OFFERS_CONTAINER.appendChild(getOfferNode(DUMMY_DATA[0]));

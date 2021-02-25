@@ -1,11 +1,11 @@
 //module for adding similar offers to DOM
-import { hideElement } from './util.js';
+import { hideElement, addNodeTextContent, addNodeSrc, pluralize } from './util.js';
 
 //-----------------------------------------------------------------------
 //Constants, Enums
 
 //this variable contains css classes of offer's template children
-const OFFER_CHILDREN = {
+const OFFER_NODE_SELECTORS = {
   avatar: '.popup__avatar',
   title: '.popup__title',
   address: '.popup__text--address',
@@ -25,6 +25,9 @@ const TYPE_TRANSLATIONS = {
   bungalow: 'Бунгало',
 };
 
+const ROOMS_WORDS_VARIANTS = ['комната', 'комнаты', 'комнат'];
+const GUESTS_WORDS_VARIANTS = ['гостя', 'гостей', 'гостей'];
+
 const OFFER_TEMPLATE = document.querySelector('#card');
 
 if (!OFFER_TEMPLATE) {
@@ -32,21 +35,21 @@ if (!OFFER_TEMPLATE) {
 }
 
 //-----------------------------------------------------------------------
-//function returns object with children of given DOM offer
-const getOfferNodeChildren = (offer) => {
-  let offerChildren = {};
+//function returns object with children of given DOM container
+const queryNodes = (parentNode, selectors) => {
+  let nodes = {};
 
-  for (const key of Object.keys(OFFER_CHILDREN)) {
-    const offerChildNode = offer.querySelector(OFFER_CHILDREN[key]);
+  for (const key of Object.keys(selectors)) {
+    const childNode = parentNode.querySelector(selectors[key]);
 
-    if (!offerChildNode) {
-      throw new Error(`getOfferNodeChildren: '${OFFER_CHILDREN[key]}' не найден!`);
+    if (!childNode) {
+      throw new Error(`queryNodes: '${selectors[key]}' не найден!`);
     }
 
-    offerChildren[key] = offerChildNode;
+    nodes[key] = childNode;
   }
 
-  return offerChildren;
+  return nodes;
 };
 
 //-----------------------------------------------------------------------
@@ -56,7 +59,7 @@ const getFeaturesFragment = (container, features) => {
     throw new Error('getFeaturesFragment: Неверные входные параметры');
   }
 
-  let fragment = document.createDocumentFragment();
+  const fragment = document.createDocumentFragment();
   const featureTemplate = container.querySelector('.popup__feature');
 
   if (!featureTemplate) {
@@ -79,7 +82,7 @@ const getPhotosFragment = (container, photos) => {
     throw new Error('getPhotosFragment: Неверные входные параметры');
   }
 
-  let fragment = document.createDocumentFragment();
+  const fragment = document.createDocumentFragment();
   const photoTemplate = container.querySelector('.popup__photo');
 
   if (!photoTemplate) {
@@ -95,24 +98,23 @@ const getPhotosFragment = (container, photos) => {
   return fragment;
 };
 
-//-----------------------------------------------------------------------
-//function adds text content to dom element or hide element in case of empty content
-const addOfferTextContent = (domElem, content) => {
-  if (content) {
-    domElem.textContent = content;
-  } else {
-    hideElement(domElem);
+// -----------------------------------------------------------------------
+// function returns text for capacity
+const getCapacityText = (rooms, guests) => {
+  if (!rooms || !guests) {
+    return '';
   }
+
+  const roomWord = pluralize(rooms, ROOMS_WORDS_VARIANTS);
+  const guestWord = pluralize(guests, GUESTS_WORDS_VARIANTS);
+
+  return `${rooms} ${roomWord} для ${guests} ${guestWord}`;
 };
 
-//-----------------------------------------------------------------------
-//function adds src url to dom element or hide element in case of empty src url
-const addOfferSrc = (domElem, srcUrl) => {
-  if (srcUrl) {
-    domElem.setAttribute('src', srcUrl);
-  } else {
-    hideElement(domElem);
-  }
+// -----------------------------------------------------------------------
+// function returns text for time
+const getCheckinCheckoutText = (checkin, checkout) => {
+  return checkin && checkout ? `Заезд после ${checkin}, выезд до ${checkout}` : '';
 };
 
 //-----------------------------------------------------------------------
@@ -123,51 +125,43 @@ const getOfferNode = (offerData) => {
   }
 
   const offer = offerData.offer;
-  const newDomOffer = OFFER_TEMPLATE.content.cloneNode(true);
-  const newDomOfferChildren = getOfferNodeChildren(newDomOffer);
+  const offerElement = OFFER_TEMPLATE.content.cloneNode(true);
+  const nodes = queryNodes(offerElement, OFFER_NODE_SELECTORS);
 
-  addOfferTextContent(newDomOfferChildren.title, offer.title);
-  addOfferTextContent(newDomOfferChildren.address, offer.address);
-  addOfferTextContent(newDomOfferChildren.type, TYPE_TRANSLATIONS[offer.type]);
-  addOfferTextContent(newDomOfferChildren.description, offer.description);
+  addNodeTextContent(nodes.title, offer.title);
+  addNodeTextContent(nodes.address, offer.address);
+  addNodeTextContent(nodes.type, TYPE_TRANSLATIONS[offer.type]);
+  addNodeTextContent(nodes.description, offer.description);
+  addNodeTextContent(nodes.capacity, getCapacityText(offer.rooms, offer.guests));
+  addNodeTextContent(nodes.time, getCheckinCheckoutText(offer.checkin, offer.checkout));
 
-  const capacityText =
-    offer.rooms && offer.guests ? `${offer.rooms} комнаты для ${offer.guests} гостей` : '';
-  addOfferTextContent(newDomOfferChildren.capacity, capacityText);
-
-  const timeText =
-    offer.checkin && offer.checkout
-      ? `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`
-      : '';
-  addOfferTextContent(newDomOfferChildren.time, timeText);
-
-  addOfferSrc(newDomOfferChildren.avatar, offerData.author.avatar);
+  addNodeSrc(nodes.avatar, offerData.author.avatar);
 
   if (offer.price) {
-    newDomOfferChildren.price.innerHTML = `${offer.price} <span>₽/ночь</span>`;
+    nodes.price.innerHTML = `${offer.price} <span>₽/ночь</span>`;
   } else {
-    hideElement(newDomOfferChildren.price);
+    hideElement(nodes.price);
   }
 
   if (offer.features.length > 0) {
-    const featuresFragment = getFeaturesFragment(newDomOfferChildren.features, offer.features);
+    const featuresFragment = getFeaturesFragment(nodes.features, offer.features);
 
-    newDomOfferChildren.features.innerHTML = '';
-    newDomOfferChildren.features.appendChild(featuresFragment);
+    nodes.features.innerHTML = '';
+    nodes.features.appendChild(featuresFragment);
   } else {
-    hideElement(newDomOfferChildren.features);
+    hideElement(nodes.features);
   }
 
   if (offer.photos.length > 0) {
-    const protosFragment = getPhotosFragment(newDomOfferChildren.photos, offer.photos);
+    const protosFragment = getPhotosFragment(nodes.photos, offer.photos);
 
-    newDomOfferChildren.photos.innerHTML = '';
-    newDomOfferChildren.photos.appendChild(protosFragment);
+    nodes.photos.innerHTML = '';
+    nodes.photos.appendChild(protosFragment);
   } else {
-    hideElement(newDomOfferChildren.photos);
+    hideElement(nodes.photos);
   }
 
-  return newDomOffer;
+  return offerElement;
 };
 
 //-----------------------------------------------------------------------
@@ -188,4 +182,4 @@ const getOffersFragment = (offers) => {
 
 //-----------------------------------------------------------------------
 //export
-export { getOffersFragment };
+export { getOfferNode, getOffersFragment };
