@@ -5,9 +5,9 @@ import {
   hideElement,
   addNodeTextContent,
   addNodeSrc,
-  addNodeFragment,
+  renderItem,
   pluralize,
-  checkExistingNode
+  getNode
 } from './util.js';
 
 //-----------------------------------------------------------------------
@@ -37,8 +37,7 @@ const TYPE_TRANSLATIONS = {
 const ROOMS_WORDS_VARIANTS = ['комната', 'комнаты', 'комнат'];
 const GUESTS_WORDS_VARIANTS = ['гостя', 'гостей', 'гостей'];
 
-const OFFER_TEMPLATE = document.querySelector('#card');
-checkExistingNode(OFFER_TEMPLATE, 'OFFER_TEMPLATE');
+const OFFER_TEMPLATE = getNode('#card');
 
 //-----------------------------------------------------------------------
 //function returns Document Fragment with appended <li> items of features
@@ -49,8 +48,7 @@ const getFeaturesFragment = (container, features) => {
 
   const fragment = document.createDocumentFragment();
 
-  const featureTemplate = container.querySelector('.popup__feature');
-  checkExistingNode(featureTemplate, 'featureTemplate');
+  const featureTemplate = getNode('.popup__feature', container);
   featureTemplate.className = 'popup__feature';
 
   features.forEach((featureData) => {
@@ -70,8 +68,7 @@ const getPhotosFragment = (container, photos) => {
   }
 
   const fragment = document.createDocumentFragment();
-  const photoTemplate = container.querySelector('.popup__photo');
-  checkExistingNode(photoTemplate, 'photoTemplate');
+  const photoTemplate = getNode('.popup__photo', container);
 
   photos.forEach((photoData) => {
     const domItem = photoTemplate.cloneNode(true);
@@ -127,8 +124,8 @@ const getOfferNode = (offerData) => {
     hideElement(nodes.price);
   }
 
-  addNodeFragment(nodes.features, offer.features, getFeaturesFragment);
-  addNodeFragment(nodes.photos, offer.photos, getPhotosFragment);
+  renderItem(nodes.features, offer.features, getFeaturesFragment);
+  renderItem(nodes.photos, offer.photos, getPhotosFragment);
 
   return offerElement;
 };

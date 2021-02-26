@@ -81,11 +81,15 @@ const pluralize = (count, variants) => {
 };
 
 //-----------------------------------------------------------------------
-//function throw error in case of non-existing node
-const checkExistingNode = (node, nodeVarName) => {
+//function return node by selector or throw error in case of non-existing node
+const getNode = (selector, parentNode = document) => {
+  const node = parentNode.querySelector(selector);
+
   if (!node) {
-    throw new Error(`${nodeVarName} не найден!`);
+    throw new Error(`${selector} не найден!`);
   }
+
+  return node;
 };
 
 //-----------------------------------------------------------------------
@@ -94,8 +98,7 @@ const queryNodes = (parentNode, selectors) => {
   let nodes = {};
 
   for (const key of Object.keys(selectors)) {
-    const childNode = parentNode.querySelector(selectors[key]);
-    checkExistingNode(childNode, `queryNodes: '${selectors[key]}'`);
+    const childNode = getNode(selectors[key], parentNode);
 
     nodes[key] = childNode;
   }
@@ -104,10 +107,10 @@ const queryNodes = (parentNode, selectors) => {
 };
 
 //-----------------------------------------------------------------------
-//function add generated fragment using fragmentGetter function from data array to node
-const addNodeFragment = (node, data, fragmentGetter) => {
+//function add generated fragment using getElement function from data array to node
+const renderItem = (node, data, getElement) => {
   if (data.length > 0) {
-    const fragment = fragmentGetter(node, data);
+    const fragment = getElement(node, data);
 
     node.innerHTML = '';
     node.appendChild(fragment);
@@ -128,7 +131,7 @@ export {
   addNodeTextContent,
   addNodeSrc,
   pluralize,
-  checkExistingNode,
+  getNode,
   queryNodes,
-  addNodeFragment
+  renderItem
 };

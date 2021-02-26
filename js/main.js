@@ -1,29 +1,19 @@
 import { MinPricesByType, generateDummyData } from './data.js';
 import { getOfferNode } from './offers.js';
 import { getPlaceTypeHandler, getTimeHandler } from './form.js';
-import { checkExistingNode } from './util.js';
+import { getNode } from './util.js';
 
 //-----------------------------------------------------------------------
 // Constants
-const OFFERS_CONTAINER = document.querySelector('.map__canvas');
-checkExistingNode(OFFERS_CONTAINER, 'OFFERS_CONTAINER');
+const OFFERS_CONTAINER = getNode('.map__canvas');
 
 const DUMMY_DATA = generateDummyData(1);
 
-const OFFER_FORM = document.querySelector('.notice');
-checkExistingNode(OFFER_FORM, 'OFFER_FORM');
-
-const PLACE_TYPE_INPUT = OFFER_FORM.querySelector('#type');
-checkExistingNode(PLACE_TYPE_INPUT, 'PLACE_TYPE_INPUT');
-
-const PLACE_PRICE_INPUT = OFFER_FORM.querySelector('#price');
-checkExistingNode(PLACE_PRICE_INPUT, 'PLACE_PRICE_INPUT');
-
-const TIME_IN_INPUT = OFFER_FORM.querySelector('#timein');
-checkExistingNode(TIME_IN_INPUT, 'TIME_IN_INPUT');
-
-const TIME_OUT_INPUT = OFFER_FORM.querySelector('#timeout');
-checkExistingNode(TIME_OUT_INPUT, 'TIME_OUT_INPUT');
+const OFFER_FORM = getNode('.notice');
+const PLACE_TYPE_INPUT = getNode('#type', OFFER_FORM);
+const PLACE_PRICE_INPUT = getNode('#price', OFFER_FORM);
+const TIME_IN_INPUT = getNode('#timein', OFFER_FORM);
+const TIME_OUT_INPUT = getNode('#timeout', OFFER_FORM);
 
 // -----------------------------------------------------------------------
 // adding offer to DOM
