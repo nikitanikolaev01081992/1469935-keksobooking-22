@@ -1,5 +1,14 @@
 //module for adding similar offers to DOM
-import { hideElement, addNodeTextContent, addNodeSrc, pluralize } from './util.js';
+// prettier-ignore
+import {
+  queryNodes,
+  hideElement,
+  addNodeTextContent,
+  addNodeSrc,
+  addNodeFragment,
+  pluralize,
+  checkExistingNode
+} from './util.js';
 
 //-----------------------------------------------------------------------
 //Constants, Enums
@@ -29,28 +38,7 @@ const ROOMS_WORDS_VARIANTS = ['комната', 'комнаты', 'комнат'
 const GUESTS_WORDS_VARIANTS = ['гостя', 'гостей', 'гостей'];
 
 const OFFER_TEMPLATE = document.querySelector('#card');
-
-if (!OFFER_TEMPLATE) {
-  throw new Error('OFFER_TEMPLATE не найден!');
-}
-
-//-----------------------------------------------------------------------
-//function returns object with children of given DOM container
-const queryNodes = (parentNode, selectors) => {
-  let nodes = {};
-
-  for (const key of Object.keys(selectors)) {
-    const childNode = parentNode.querySelector(selectors[key]);
-
-    if (!childNode) {
-      throw new Error(`queryNodes: '${selectors[key]}' не найден!`);
-    }
-
-    nodes[key] = childNode;
-  }
-
-  return nodes;
-};
+checkExistingNode(OFFER_TEMPLATE, 'OFFER_TEMPLATE');
 
 //-----------------------------------------------------------------------
 //function returns Document Fragment with appended <li> items of features
@@ -60,11 +48,10 @@ const getFeaturesFragment = (container, features) => {
   }
 
   const fragment = document.createDocumentFragment();
-  const featureTemplate = container.querySelector('.popup__feature');
 
-  if (!featureTemplate) {
-    throw new Error('featureTemplate не найден!');
-  }
+  const featureTemplate = container.querySelector('.popup__feature');
+  checkExistingNode(featureTemplate, 'featureTemplate');
+  featureTemplate.className = 'popup__feature';
 
   features.forEach((featureData) => {
     const domItem = featureTemplate.cloneNode(true);
@@ -84,10 +71,7 @@ const getPhotosFragment = (container, photos) => {
 
   const fragment = document.createDocumentFragment();
   const photoTemplate = container.querySelector('.popup__photo');
-
-  if (!photoTemplate) {
-    throw new Error('photoTemplate не найден!');
-  }
+  checkExistingNode(photoTemplate, 'photoTemplate');
 
   photos.forEach((photoData) => {
     const domItem = photoTemplate.cloneNode(true);
@@ -143,23 +127,8 @@ const getOfferNode = (offerData) => {
     hideElement(nodes.price);
   }
 
-  if (offer.features.length > 0) {
-    const featuresFragment = getFeaturesFragment(nodes.features, offer.features);
-
-    nodes.features.innerHTML = '';
-    nodes.features.appendChild(featuresFragment);
-  } else {
-    hideElement(nodes.features);
-  }
-
-  if (offer.photos.length > 0) {
-    const protosFragment = getPhotosFragment(nodes.photos, offer.photos);
-
-    nodes.photos.innerHTML = '';
-    nodes.photos.appendChild(protosFragment);
-  } else {
-    hideElement(nodes.photos);
-  }
+  addNodeFragment(nodes.features, offer.features, getFeaturesFragment);
+  addNodeFragment(nodes.photos, offer.photos, getPhotosFragment);
 
   return offerElement;
 };
@@ -180,6 +149,6 @@ const getOffersFragment = (offers) => {
   return fragment;
 };
 
-//-----------------------------------------------------------------------
-//export
+// -----------------------------------------------------------------------
+// EXPORTS
 export { getOfferNode, getOffersFragment };
