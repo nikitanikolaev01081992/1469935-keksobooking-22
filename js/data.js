@@ -101,5 +101,12 @@ const generateDummyData = (counts = 10) => {
 };
 
 // -----------------------------------------------------------------------
+// function adds data converted by converter function to container
+const addData = (node, converterFunc) => {
+  const data = generateDummyData(1);
+  node.appendChild(converterFunc(data[0]));
+};
+
+// -----------------------------------------------------------------------
 // EXPORTS
-export { MinPricesByType, generateDummyData };
+export { MinPricesByType, addData };

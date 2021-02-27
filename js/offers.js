@@ -1,4 +1,4 @@
-//module for adding similar offers to DOM
+// module for adding similar offers to DOM
 // prettier-ignore
 import {
   queryNodes,
@@ -10,10 +10,10 @@ import {
   getNode
 } from './util.js';
 
-//-----------------------------------------------------------------------
-//Constants, Enums
+// -----------------------------------------------------------------------
+// Constants, Enums
 
-//this variable contains css classes of offer's template children
+// this variable contains css classes of offer's template children
 const OFFER_NODE_SELECTORS = {
   avatar: '.popup__avatar',
   title: '.popup__title',
@@ -39,8 +39,8 @@ const GUESTS_WORDS_VARIANTS = ['гостя', 'гостей', 'гостей'];
 
 const OFFER_TEMPLATE = getNode('#card');
 
-//-----------------------------------------------------------------------
-//function returns Document Fragment with appended <li> items of features
+// -----------------------------------------------------------------------
+// function returns Document Fragment with appended <li> items of features
 const getFeaturesFragment = (container, features) => {
   if (!container || !Array.isArray(features)) {
     throw new Error('getFeaturesFragment: Неверные входные параметры');
@@ -60,8 +60,8 @@ const getFeaturesFragment = (container, features) => {
   return fragment;
 };
 
-//-----------------------------------------------------------------------
-//function returns Document Fragment with appended <img> items of photos
+// -----------------------------------------------------------------------
+// function returns Document Fragment with appended <img> items of photos
 const getPhotosFragment = (container, photos) => {
   if (!container || !Array.isArray(photos)) {
     throw new Error('getPhotosFragment: Неверные входные параметры');
@@ -98,8 +98,8 @@ const getCheckinCheckoutText = (checkin, checkout) => {
   return checkin && checkout ? `Заезд после ${checkin}, выезд до ${checkout}` : '';
 };
 
-//-----------------------------------------------------------------------
-//function returns DOM element representing offer
+// -----------------------------------------------------------------------
+// function returns DOM element representing offer
 const getOfferNode = (offerData) => {
   if (!offerData || !offerData.author || !offerData.offer) {
     throw new Error('getOfferNode: Неверные входные параметры');
@@ -130,8 +130,8 @@ const getOfferNode = (offerData) => {
   return offerElement;
 };
 
-//-----------------------------------------------------------------------
-//function returns document fragment with appended nodes of offers
+// -----------------------------------------------------------------------
+// function returns document fragment with appended nodes of offers
 const getOffersFragment = (offers) => {
   if (!Array.isArray(offers)) {
     throw new Error('getOffersFragment: Неверные входные параметры');
