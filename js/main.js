@@ -1,16 +1,16 @@
-import { generateDummyData } from './data.js';
+import { addData } from './data.js';
 import { getOfferNode } from './offers.js';
+import { addFormHandlers } from './form.js';
+import { getNode } from './util.js';
 
-//-----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // Constants
-const OFFERS_CONTAINER = document.querySelector('.map__canvas');
+const OFFERS_CONTAINER = getNode('.map__canvas');
 
-if (!OFFERS_CONTAINER) {
-  throw new Error('OFFERS_CONTAINER не найден!');
-}
-
-const DUMMY_DATA = generateDummyData(1);
-
-//-----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // adding offer to DOM
-OFFERS_CONTAINER.appendChild(getOfferNode(DUMMY_DATA[0]));
+addData(OFFERS_CONTAINER, getOfferNode);
+
+// -----------------------------------------------------------------------
+// adding form handlers
+addFormHandlers();

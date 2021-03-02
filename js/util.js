@@ -80,6 +80,47 @@ const pluralize = (count, variants) => {
   return variants[2];
 };
 
+//-----------------------------------------------------------------------
+//function return node by selector or throw error in case of non-existing node
+const getNode = (selector, parentNode = document) => {
+  const node = parentNode.querySelector(selector);
+
+  if (!node) {
+    throw new Error(`${selector} не найден!`);
+  }
+
+  return node;
+};
+
+//-----------------------------------------------------------------------
+//function returns object with children of given DOM container
+const queryNodes = (parentNode, selectors) => {
+  let nodes = {};
+
+  for (const key of Object.keys(selectors)) {
+    const childNode = getNode(selectors[key], parentNode);
+
+    nodes[key] = childNode;
+  }
+
+  return nodes;
+};
+
+//-----------------------------------------------------------------------
+//function add generated fragment using getElement function from data array to node
+const renderItem = (node, data, getElement) => {
+  if (data.length > 0) {
+    const fragment = getElement(node, data);
+
+    node.innerHTML = '';
+    node.appendChild(fragment);
+  } else {
+    hideElement(node);
+  }
+};
+
+// -----------------------------------------------------------------------
+// EXPORTS
 // prettier-ignore
 export {
   getRandomInt,
@@ -89,5 +130,8 @@ export {
   hideElement,
   addNodeTextContent,
   addNodeSrc,
-  pluralize
+  pluralize,
+  getNode,
+  queryNodes,
+  renderItem
 };

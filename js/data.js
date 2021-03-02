@@ -33,7 +33,7 @@ const MinPricesByType = {
   BUNGALOW: 0,
 };
 
-//-----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // DATA GENERATOR
 
 const getRandAvatarUrl = (baseUrl, maxId) => {
@@ -100,4 +100,13 @@ const generateDummyData = (counts = 10) => {
   return dummyData;
 };
 
-export { generateDummyData };
+// -----------------------------------------------------------------------
+// function adds data converted by converter function to container
+const addData = (node, converterFunc) => {
+  const data = generateDummyData(1);
+  node.appendChild(converterFunc(data[0]));
+};
+
+// -----------------------------------------------------------------------
+// EXPORTS
+export { MinPricesByType, addData };

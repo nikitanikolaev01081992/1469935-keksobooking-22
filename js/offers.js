@@ -1,10 +1,19 @@
-//module for adding similar offers to DOM
-import { hideElement, addNodeTextContent, addNodeSrc, pluralize } from './util.js';
+// module for adding similar offers to DOM
+// prettier-ignore
+import {
+  queryNodes,
+  hideElement,
+  addNodeTextContent,
+  addNodeSrc,
+  renderItem,
+  pluralize,
+  getNode
+} from './util.js';
 
-//-----------------------------------------------------------------------
-//Constants, Enums
+// -----------------------------------------------------------------------
+// Constants, Enums
 
-//this variable contains css classes of offer's template children
+// this variable contains css classes of offer's template children
 const OFFER_NODE_SELECTORS = {
   avatar: '.popup__avatar',
   title: '.popup__title',
@@ -28,43 +37,19 @@ const TYPE_TRANSLATIONS = {
 const ROOMS_WORDS_VARIANTS = ['комната', 'комнаты', 'комнат'];
 const GUESTS_WORDS_VARIANTS = ['гостя', 'гостей', 'гостей'];
 
-const OFFER_TEMPLATE = document.querySelector('#card');
+const OFFER_TEMPLATE = getNode('#card');
 
-if (!OFFER_TEMPLATE) {
-  throw new Error('OFFER_TEMPLATE не найден!');
-}
-
-//-----------------------------------------------------------------------
-//function returns object with children of given DOM container
-const queryNodes = (parentNode, selectors) => {
-  let nodes = {};
-
-  for (const key of Object.keys(selectors)) {
-    const childNode = parentNode.querySelector(selectors[key]);
-
-    if (!childNode) {
-      throw new Error(`queryNodes: '${selectors[key]}' не найден!`);
-    }
-
-    nodes[key] = childNode;
-  }
-
-  return nodes;
-};
-
-//-----------------------------------------------------------------------
-//function returns Document Fragment with appended <li> items of features
+// -----------------------------------------------------------------------
+// function returns Document Fragment with appended <li> items of features
 const getFeaturesFragment = (container, features) => {
   if (!container || !Array.isArray(features)) {
     throw new Error('getFeaturesFragment: Неверные входные параметры');
   }
 
   const fragment = document.createDocumentFragment();
-  const featureTemplate = container.querySelector('.popup__feature');
 
-  if (!featureTemplate) {
-    throw new Error('featureTemplate не найден!');
-  }
+  const featureTemplate = getNode('.popup__feature', container);
+  featureTemplate.className = 'popup__feature';
 
   features.forEach((featureData) => {
     const domItem = featureTemplate.cloneNode(true);
@@ -75,19 +60,15 @@ const getFeaturesFragment = (container, features) => {
   return fragment;
 };
 
-//-----------------------------------------------------------------------
-//function returns Document Fragment with appended <img> items of photos
+// -----------------------------------------------------------------------
+// function returns Document Fragment with appended <img> items of photos
 const getPhotosFragment = (container, photos) => {
   if (!container || !Array.isArray(photos)) {
     throw new Error('getPhotosFragment: Неверные входные параметры');
   }
 
   const fragment = document.createDocumentFragment();
-  const photoTemplate = container.querySelector('.popup__photo');
-
-  if (!photoTemplate) {
-    throw new Error('photoTemplate не найден!');
-  }
+  const photoTemplate = getNode('.popup__photo', container);
 
   photos.forEach((photoData) => {
     const domItem = photoTemplate.cloneNode(true);
@@ -117,8 +98,8 @@ const getCheckinCheckoutText = (checkin, checkout) => {
   return checkin && checkout ? `Заезд после ${checkin}, выезд до ${checkout}` : '';
 };
 
-//-----------------------------------------------------------------------
-//function returns DOM element representing offer
+// -----------------------------------------------------------------------
+// function returns DOM element representing offer
 const getOfferNode = (offerData) => {
   if (!offerData || !offerData.author || !offerData.offer) {
     throw new Error('getOfferNode: Неверные входные параметры');
@@ -143,29 +124,14 @@ const getOfferNode = (offerData) => {
     hideElement(nodes.price);
   }
 
-  if (offer.features.length > 0) {
-    const featuresFragment = getFeaturesFragment(nodes.features, offer.features);
-
-    nodes.features.innerHTML = '';
-    nodes.features.appendChild(featuresFragment);
-  } else {
-    hideElement(nodes.features);
-  }
-
-  if (offer.photos.length > 0) {
-    const protosFragment = getPhotosFragment(nodes.photos, offer.photos);
-
-    nodes.photos.innerHTML = '';
-    nodes.photos.appendChild(protosFragment);
-  } else {
-    hideElement(nodes.photos);
-  }
+  renderItem(nodes.features, offer.features, getFeaturesFragment);
+  renderItem(nodes.photos, offer.photos, getPhotosFragment);
 
   return offerElement;
 };
 
-//-----------------------------------------------------------------------
-//function returns document fragment with appended nodes of offers
+// -----------------------------------------------------------------------
+// function returns document fragment with appended nodes of offers
 const getOffersFragment = (offers) => {
   if (!Array.isArray(offers)) {
     throw new Error('getOffersFragment: Неверные входные параметры');
@@ -180,6 +146,6 @@ const getOffersFragment = (offers) => {
   return fragment;
 };
 
-//-----------------------------------------------------------------------
-//export
+// -----------------------------------------------------------------------
+// EXPORTS
 export { getOfferNode, getOffersFragment };
