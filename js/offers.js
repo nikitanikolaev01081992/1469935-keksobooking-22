@@ -38,6 +38,7 @@ const ROOMS_WORDS_VARIANTS = ['комната', 'комнаты', 'комнат'
 const GUESTS_WORDS_VARIANTS = ['гостя', 'гостей', 'гостей'];
 
 const OFFER_TEMPLATE = getNode('#card');
+const OFFER_ELEMENT = getNode('.popup', OFFER_TEMPLATE.content);
 
 // -----------------------------------------------------------------------
 // function returns Document Fragment with appended <li> items of features
@@ -106,8 +107,8 @@ const getOfferNode = (offerData) => {
   }
 
   const offer = offerData.offer;
-  const offerElement = OFFER_TEMPLATE.content.cloneNode(true);
-  const nodes = queryNodes(offerElement, OFFER_NODE_SELECTORS);
+  const offerElement = OFFER_ELEMENT.cloneNode(true);
+  const nodes = queryNodes(OFFER_NODE_SELECTORS, offerElement);
 
   addNodeTextContent(nodes.title, offer.title);
   addNodeTextContent(nodes.address, offer.address);
@@ -132,14 +133,14 @@ const getOfferNode = (offerData) => {
 
 // -----------------------------------------------------------------------
 // function returns document fragment with appended nodes of offers
-const getOffersFragment = (offers) => {
-  if (!Array.isArray(offers)) {
+const getOffersFragment = (offersData) => {
+  if (!Array.isArray(offersData)) {
     throw new Error('getOffersFragment: Неверные входные параметры');
   }
 
   const fragment = document.createDocumentFragment();
 
-  offers.forEach((offerData) => {
+  offersData.forEach((offerData) => {
     fragment.appendChild(getOfferNode(offerData));
   });
 
@@ -147,5 +148,17 @@ const getOffersFragment = (offers) => {
 };
 
 // -----------------------------------------------------------------------
+// function returns array of offers
+const getOffers = (offersData) => {
+  if (!Array.isArray(offersData)) {
+    throw new Error('getOffersFragment: Неверные входные параметры');
+  }
+
+  return offersData.map((offerData) => {
+    return getOfferNode(offerData);
+  });
+};
+
+// -----------------------------------------------------------------------
 // EXPORTS
-export { getOfferNode, getOffersFragment };
+export { getOfferNode, getOffers, getOffersFragment };

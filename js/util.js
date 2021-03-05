@@ -94,7 +94,7 @@ const getNode = (selector, parentNode = document) => {
 
 //-----------------------------------------------------------------------
 //function returns object with children of given DOM container
-const queryNodes = (parentNode, selectors) => {
+const queryNodes = (selectors, parentNode = document) => {
   let nodes = {};
 
   for (const key of Object.keys(selectors)) {
