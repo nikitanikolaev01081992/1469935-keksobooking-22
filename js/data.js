@@ -88,7 +88,7 @@ const getRandDataObject = (id = 1) => {
 };
 
 // -----------------------------------------------------------------------
-const generateDummyData = (counts = 10) => {
+const getData = (counts = 10) => {
   if (isNaN(counts) || counts < 0) {
     throw new Error('generateDummyData: Неверные входные параметры');
   }
@@ -99,12 +99,6 @@ const generateDummyData = (counts = 10) => {
   }
 
   return dummyData;
-};
-
-// -----------------------------------------------------------------------
-// function returns data
-const getData = () => {
-  return generateDummyData();
 };
 
 // -----------------------------------------------------------------------

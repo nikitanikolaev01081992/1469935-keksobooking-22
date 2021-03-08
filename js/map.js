@@ -7,39 +7,31 @@ import { getNode } from './util.js';
 const MAP_CONTAINER = getNode('#map-canvas');
 const MAP_OBJ = L.map(MAP_CONTAINER);
 
-const InitialOptions = {
-  LAT: 35.6938,
-  LNG: 139.7034,
-  ZOOM: 12,
+const DEFAULT_COORDS = {
+  lat: 35.6938,
+  lng: 139.7034,
 };
+
+const DEFATUL_MAP_ZOOM = 12;
 
 const LAYER_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-const LAYER_ATTRIBUTION =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+const LAYER_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
-const MAIN_PIN_ICON = L.icon({
-  iconUrl: '../img/main-pin.svg',
+const MAIN_PIN_ICON_PARAMS = {
+  iconUrl: 'img/main-pin.svg',
   iconSize: [52, 52],
   iconAnchor: [26, 52],
-});
-
-const MainMarkerParams = {
-  LAT: InitialOptions.LAT,
-  LNG: InitialOptions.LNG,
-  ICON: MAIN_PIN_ICON,
-  DRAGGABLE: true,
 };
+const MAIN_PIN_ICON = L.icon(MAIN_PIN_ICON_PARAMS);
 
-const PIN_ICON = L.icon({
-  iconUrl: '../img/pin.svg',
-  iconSize: [52, 52],
-  iconAnchor: [26, 52],
-});
-
-const MarkerParams = {
-  ICON: PIN_ICON,
-  DRAGGABLE: false,
+const PIN_ICON_PARAMS = {
+  iconUrl: 'img/pin.svg',
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
 };
+const PIN_ICON = L.icon(PIN_ICON_PARAMS);
+
+const MARKER_GROUP = L.layerGroup([]);
 
 // -----------------------------------------------------------------------
 // function create map from Leaflet
@@ -49,9 +41,7 @@ const createMap = (onLoadFunc) => {
   }
 
   // prettier-ignore
-  const {LAT: lat, LNG: lng, ZOOM: zoom} = InitialOptions;
-
-  MAP_OBJ.setView({ lat, lng }, zoom);
+  MAP_OBJ.setView(DEFAULT_COORDS, DEFATUL_MAP_ZOOM);
 
   L.tileLayer(LAYER_URL, {
     attribution: LAYER_ATTRIBUTION,
@@ -59,51 +49,34 @@ const createMap = (onLoadFunc) => {
 };
 
 // -----------------------------------------------------------------------
-// function create marker in MAP_OBJ
-const addMarker = ({ lat, lng, icon, draggable = false }) => {
-  const pinMarker = L.marker({ lat, lng }, { draggable, icon });
+const initMap = (onLoadFunc, onMainMarkerMoveEnd, markersData = [], getPopup) => {
+  createMap(() => {
+    onLoadFunc();
+    onMainMarkerMoveEnd(DEFAULT_COORDS);
+  });
 
-  pinMarker.addTo(MAP_OBJ);
+  //add main marker
+  const mainMarker = L.marker(DEFAULT_COORDS, { icon: MAIN_PIN_ICON, draggable: true }).addTo(MAP_OBJ);
 
-  return pinMarker;
-};
+  mainMarker.on('moveend', (evt) => {
+    onMainMarkerMoveEnd(evt.target.getLatLng());
+  });
 
-// -----------------------------------------------------------------------
-// function create main marker in MAP_OBJ
-const addMainMarker = (onMarkerMoveEnd) => {
-  //adding main marker to map
-  const { LAT: lat, LNG: lng, ICON: icon, DRAGGABLE: draggable } = MainMarkerParams;
+  //create markers
+  markersData.forEach(({ lat, lng, id }) => {
+    const marker = L.marker({ lat, lng }, { icon: PIN_ICON, draggable: false });
 
-  const mainMarker = addMarker({ lat, lng, icon, draggable });
-
-  if (onMarkerMoveEnd) {
-    mainMarker.on('moveend', (evt) => {
-      onMarkerMoveEnd(evt.target.getLatLng());
+    marker.bindPopup(() => {
+      return getPopup(id);
     });
 
-    onMarkerMoveEnd(mainMarker.getLatLng());
-  }
+    MARKER_GROUP.addLayer(marker);
+  });
 
-  return mainMarker;
-};
-
-// -----------------------------------------------------------------------
-// function add markers to MAP_OBJ from array with data for markes
-// markersData is array of objects {lat, lng, popupContent}
-const addMarkers = (markersData) => {
-  if (!Array.isArray(markersData)) {
-    throw new Error('addMarkers: неверные входные параметры');
-  }
-
-  // prettier-ignore
-  markersData.forEach(
-    ({ lat, lng, popupContent, icon = MarkerParams.ICON, draggable = MarkerParams.DRAGGABLE }) => {
-      const marker = addMarker({ lat, lng, icon, draggable });
-      marker.bindPopup(popupContent);
-    },
-  );
+  //add markers to map
+  MARKER_GROUP.addTo(MAP_OBJ);
 };
 
 // -----------------------------------------------------------------------
 // EXPORTS
-export { createMap, addMarkers, addMainMarker };
+export { initMap };

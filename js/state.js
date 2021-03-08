@@ -1,5 +1,4 @@
 // module for controlling state of page
-
 import { queryNodes } from './util.js';
 
 // -----------------------------------------------------------------------

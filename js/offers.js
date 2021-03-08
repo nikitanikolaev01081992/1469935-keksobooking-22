@@ -132,33 +132,5 @@ const getOfferNode = (offerData) => {
 };
 
 // -----------------------------------------------------------------------
-// function returns document fragment with appended nodes of offers
-const getOffersFragment = (offersData) => {
-  if (!Array.isArray(offersData)) {
-    throw new Error('getOffersFragment: Неверные входные параметры');
-  }
-
-  const fragment = document.createDocumentFragment();
-
-  offersData.forEach((offerData) => {
-    fragment.appendChild(getOfferNode(offerData));
-  });
-
-  return fragment;
-};
-
-// -----------------------------------------------------------------------
-// function returns array of offers
-const getOffers = (offersData) => {
-  if (!Array.isArray(offersData)) {
-    throw new Error('getOffersFragment: Неверные входные параметры');
-  }
-
-  return offersData.map((offerData) => {
-    return getOfferNode(offerData);
-  });
-};
-
-// -----------------------------------------------------------------------
 // EXPORTS
-export { getOfferNode, getOffers, getOffersFragment };
+export { getOfferNode };

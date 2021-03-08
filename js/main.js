@@ -1,7 +1,7 @@
 import { disableForms, enableForms } from './state.js';
 import { addFormHandlers, updateAddress } from './form.js';
-import { createMap, addMarkers, addMainMarker } from './map.js';
-import { getOffers } from './offers.js';
+import { initMap } from './map.js';
+import { getOfferNode } from './offers.js';
 import { getData } from './data.js';
 
 // -----------------------------------------------------------------------
@@ -13,31 +13,28 @@ disableForms();
 const offersData = getData();
 
 // -----------------------------------------------------------------------
-// generate offers elements
-const offers = getOffers(offersData);
-
-// -----------------------------------------------------------------------
 // adding map
+const markersData = offersData.map((item, index) => {
+  return {
+    lat: item.location.x,
+    lng: item.location.y,
+    id: index,
+  };
+});
+
+const onMapLoad = () => {
+  enableForms();
+};
+
 const onMainMarkerMoveEnd = (coords) => {
   updateAddress(coords);
 };
 
-const onLoadMap = () => {
-  enableForms();
-
-  const markersData = offersData.map((item, index) => {
-    return {
-      lat: item.location.x,
-      lng: item.location.y,
-      popupContent: offers[index],
-    };
-  });
-
-  addMainMarker(onMainMarkerMoveEnd);
-  addMarkers(markersData);
+const getPopup = (id) => {
+  return getOfferNode(offersData[id]);
 };
 
-createMap(onLoadMap);
+initMap(onMapLoad, onMainMarkerMoveEnd, markersData, getPopup);
 
 // -----------------------------------------------------------------------
 // adding form handlers
