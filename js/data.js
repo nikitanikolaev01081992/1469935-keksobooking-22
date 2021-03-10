@@ -87,7 +87,8 @@ const getRandDataObject = (id = 1) => {
   };
 };
 
-const generateDummyData = (counts = 10) => {
+// -----------------------------------------------------------------------
+const getData = (counts = 10) => {
   if (isNaN(counts) || counts < 0) {
     throw new Error('generateDummyData: Неверные входные параметры');
   }
@@ -101,12 +102,5 @@ const generateDummyData = (counts = 10) => {
 };
 
 // -----------------------------------------------------------------------
-// function adds data converted by converter function to container
-const addData = (node, converterFunc) => {
-  const data = generateDummyData(1);
-  node.appendChild(converterFunc(data[0]));
-};
-
-// -----------------------------------------------------------------------
 // EXPORTS
-export { MinPricesByType, addData };
+export { MinPricesByType, getData };

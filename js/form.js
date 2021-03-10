@@ -9,6 +9,9 @@ const PLACE_TYPE_INPUT = getNode('#type', OFFER_FORM);
 const PLACE_PRICE_INPUT = getNode('#price', OFFER_FORM);
 const TIME_IN_INPUT = getNode('#timein', OFFER_FORM);
 const TIME_OUT_INPUT = getNode('#timeout', OFFER_FORM);
+const ADDRESS_INPUT = getNode('#address', OFFER_FORM);
+
+const ADDRESS_PRECISION = 5;
 
 // -----------------------------------------------------------------------
 // function returns change handler fot type input
@@ -54,5 +57,13 @@ const addFormHandlers = () => {
 };
 
 // -----------------------------------------------------------------------
+// function updates value of address input
+const updateAddress = (coords) => {
+  // prettier-ignore
+  const coordsText = `${coords.lat.toFixed(ADDRESS_PRECISION)}, ${coords.lng.toFixed(ADDRESS_PRECISION)}`;
+  ADDRESS_INPUT.value = coordsText;
+};
+
+// -----------------------------------------------------------------------
 // EXPORTS
-export { addFormHandlers };
+export { addFormHandlers, updateAddress };
