@@ -58,7 +58,7 @@ const initMap = (onLoadFunc, onMainMarkerMoveEnd, markersData = [], getPopup) =>
   //add main marker
   const mainMarker = L.marker(DEFAULT_COORDS, { icon: MAIN_PIN_ICON, draggable: true }).addTo(MAP_OBJ);
 
-  mainMarker.on('moveend', (evt) => {
+  mainMarker.on('move', (evt) => {
     onMainMarkerMoveEnd(evt.target.getLatLng());
   });
 
