@@ -16,12 +16,7 @@
     <main>
       <div class="promo">
         <h1 class="promo__title visually-hidden">Keksobooking. Кексы по соседству</h1>
-        <img
-          src="img/keksobooking.svg"
-          alt="Keksobooking. Кексы по соседству"
-          width="215"
-          height="45"
-        />
+        <img src="img/keksobooking.svg" alt="Keksobooking. Кексы по соседству" width="215" height="45" />
       </div>
 
       <!-- Карта объявлений -->
@@ -73,9 +68,7 @@
                 id="filter-dishwasher"
                 class="map__checkbox visually-hidden"
               />
-              <label class="map__feature map__feature--dishwasher" for="filter-dishwasher"
-                >Посудомоечная машина</label
-              >
+              <label class="map__feature map__feature--dishwasher" for="filter-dishwasher">Посудомоечная машина</label>
               <input
                 type="checkbox"
                 name="features"
@@ -83,9 +76,7 @@
                 id="filter-parking"
                 class="map__checkbox visually-hidden"
               />
-              <label class="map__feature map__feature--parking" for="filter-parking"
-                >Парковка</label
-              >
+              <label class="map__feature map__feature--parking" for="filter-parking">Парковка</label>
               <input
                 type="checkbox"
                 name="features"
@@ -93,9 +84,7 @@
                 id="filter-washer"
                 class="map__checkbox visually-hidden"
               />
-              <label class="map__feature map__feature--washer" for="filter-washer"
-                >Стиральная машина</label
-              >
+              <label class="map__feature map__feature--washer" for="filter-washer">Стиральная машина</label>
               <input
                 type="checkbox"
                 name="features"
@@ -111,9 +100,7 @@
                 id="filter-conditioner"
                 class="map__checkbox visually-hidden"
               />
-              <label class="map__feature map__feature--conditioner" for="filter-conditioner"
-                >Кондиционер</label
-              >
+              <label class="map__feature map__feature--conditioner" for="filter-conditioner">Кондиционер</label>
             </fieldset>
           </form>
         </div>
@@ -122,7 +109,13 @@
       <!-- Форма объявления -->
       <section class="notice">
         <h2 class="notice__title">Ваше объявление</h2>
-        <form class="ad-form" method="post" enctype="multipart/form-data" autocomplete="off">
+        <form
+          class="ad-form"
+          action="https://22.javascript.pages.academy/keksobooking"
+          method="post"
+          enctype="multipart/form-data"
+          autocomplete="off"
+        >
           <fieldset class="ad-form-header">
             <legend class="ad-form-header__title">Ваша фотография (для карты)</legend>
             <div class="ad-form-header__upload">
@@ -135,14 +128,14 @@
                   id="avatar"
                   name="avatar"
                   class="ad-form-header__input visually-hidden"
+                  accept="image/*"
                 />
                 <label class="ad-form-header__drop-zone" for="avatar">Загрузить<br />фото...</label>
               </div>
               <p class="ad-form-header__info">
-                Заполните все обязательные поля, назначьте цену, загрузите аватар и фото жилья.
-                Придумайте интересное описание. Оно сделает объявление более живым и
-                привлекательным. Получившееся объявление должно давать гостям полное представление о
-                вашем жилье.
+                Заполните все обязательные поля, назначьте цену, загрузите аватар и фото жилья. Придумайте интересное
+                описание. Оно сделает объявление более живым и привлекательным. Получившееся объявление должно давать
+                гостям полное представление о вашем жилье.
               </p>
             </div>
           </fieldset>
@@ -153,6 +146,9 @@
               name="title"
               type="text"
               placeholder="Милая, уютная квартирка в центре Токио"
+              required
+              minlength="30"
+              maxlength="100"
             />
           </fieldset>
           <fieldset class="ad-form__element ad-form__element--wide">
@@ -170,7 +166,7 @@
           </fieldset>
           <fieldset class="ad-form__element">
             <label class="ad-form__label" for="price">Цена за ночь, руб.</label>
-            <input id="price" name="price" type="number" placeholder="5000" />
+            <input id="price" name="price" type="number" min="1000" placeholder="1000" max="1000000" required />
           </fieldset>
           <fieldset class="ad-form__element ad-form__element--time">
             <label class="ad-form__label" for="timein">Время заезда и выезда</label>
@@ -197,9 +193,9 @@
           <fieldset class="ad-form__element">
             <label class="ad-form__label" for="capacity">Количество мест</label>
             <select id="capacity" name="capacity">
-              <option value="3" selected>для 3 гостей</option>
+              <option value="3">для 3 гостей</option>
               <option value="2">для 2 гостей</option>
-              <option value="1">для 1 гостя</option>
+              <option value="1" selected>для 1 гостя</option>
               <option value="0">не для гостей</option>
             </select>
           </fieldset>
@@ -220,9 +216,7 @@
               id="feature-dishwasher"
               class="feature__checkbox visually-hidden"
             />
-            <label class="feature feature--dishwasher" for="feature-dishwasher"
-              >Посудомоечная машина</label
-            >
+            <label class="feature feature--dishwasher" for="feature-dishwasher">Посудомоечная машина</label>
             <input
               type="checkbox"
               name="features"
@@ -254,9 +248,7 @@
               id="feature-conditioner"
               class="feature__checkbox visually-hidden"
             />
-            <label class="feature feature--conditioner" for="feature-conditioner"
-              >Кондиционер</label
-            >
+            <label class="feature feature--conditioner" for="feature-conditioner">Кондиционер</label>
           </fieldset>
           <fieldset class="ad-form__element ad-form__element--wide">
             <label class="ad-form__label" for="description">Описание (не обязательно)</label>
@@ -270,12 +262,7 @@
             <label class="ad-form__label">Фотография жилья</label>
             <div class="ad-form__photo-container">
               <div class="ad-form__upload">
-                <input
-                  type="file"
-                  id="images"
-                  name="images"
-                  class="ad-form__input visually-hidden"
-                />
+                <input type="file" id="images" name="images" class="ad-form__input visually-hidden" accept="image/*" />
                 <label for="images" class="ad-form__drop-zone">Загрузить<br />фото...</label>
               </div>
               <div class="ad-form__photo"></div>
@@ -291,48 +278,27 @@
 
     <footer class="footer container">
       <div class="footer__copyright copyright">
-        <a
-          class="copyright__link copyright__link--image"
-          href="https://htmlacademy.ru/intensive/javascript"
-        >
-          <img
-            src="img/htmla-logo.svg"
-            width="130"
-            height="45"
-            alt="HTML Academy"
-            class="copyright__logo"
-          />
+        <a class="copyright__link copyright__link--image" href="https://htmlacademy.ru/intensive/javascript">
+          <img src="img/htmla-logo.svg" width="130" height="45" alt="HTML Academy" class="copyright__logo" />
         </a>
         <p>
           Сделано в
-          <a
-            class="copyright__link copyright__link--text"
-            href="https://htmlacademy.ru/intensive/javascript"
+          <a class="copyright__link copyright__link--text" href="https://htmlacademy.ru/intensive/javascript"
             >HTMLAcademy</a
           >
         </p>
       </div>
       <ul class="footer__contacts contacts">
         <li>
-          <a
-            href="https://twitter.com/htmlacademy_ru"
-            class="contacts__link contacts__link--twitter"
-            >Twitter</a
-          >
+          <a href="https://twitter.com/htmlacademy_ru" class="contacts__link contacts__link--twitter">Twitter</a>
         </li>
         <li>
-          <a
-            href="https://www.instagram.com/htmlacademy/"
-            class="contacts__link contacts__link--instagram"
+          <a href="https://www.instagram.com/htmlacademy/" class="contacts__link contacts__link--instagram"
             >Instagtam</a
           >
         </li>
         <li>
-          <a
-            href="https://www.facebook.com/htmlacademy"
-            class="contacts__link contacts__link--facebook"
-            >Facebook</a
-          >
+          <a href="https://www.facebook.com/htmlacademy" class="contacts__link contacts__link--facebook">Facebook</a>
         </li>
         <li>
           <a href="https://vk.com/htmlacademy" class="contacts__link contacts__link--vk">VK</a>
@@ -343,17 +309,9 @@
     <!-- Карточка объявления -->
     <template id="card">
       <article class="popup">
-        <img
-          src="img/avatars/user01.png"
-          class="popup__avatar"
-          width="70"
-          height="70"
-          alt="Аватар пользователя"
-        />
+        <img src="img/avatars/user01.png" class="popup__avatar" width="70" height="70" alt="Аватар пользователя" />
         <h3 class="popup__title">Уютное гнездышко для молодоженов</h3>
-        <p class="popup__text popup__text--address">
-          102-0082 Tōkyō-to, Chiyoda-ku, Ichibanchō, 14−3
-        </p>
+        <p class="popup__text popup__text--address">102-0082 Tōkyō-to, Chiyoda-ku, Ichibanchō, 14−3</p>
         <p class="popup__text popup__text--price">5200 <span>₽/ночь</span></p>
         <h4 class="popup__type">Квартира</h4>
         <p class="popup__text popup__text--capacity">2 комнаты для 3 гостей</p>
@@ -367,8 +325,8 @@
           <li class="popup__feature popup__feature--conditioner"></li>
         </ul>
         <p class="popup__description">
-          Великолепная квартира-студия в центре Токио. Подходит как туристам, так и бизнесменам.
-          Квартира полностью укомплектована и недавно отремонтирована.
+          Великолепная квартира-студия в центре Токио. Подходит как туристам, так и бизнесменам. Квартира полностью
+          укомплектована и недавно отремонтирована.
         </p>
         <div class="popup__photos">
           <img src="" class="popup__photo" width="45" height="40" alt="Фотография жилья" />
