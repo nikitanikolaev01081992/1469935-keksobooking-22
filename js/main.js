@@ -1,40 +1,45 @@
 import { disableForms, enableForms } from './state.js';
 import { addFormHandlers, updateAddress } from './form.js';
-import { initMap } from './map.js';
+import { initMap, addMarkers } from './map.js';
 import { getOfferNode } from './offers.js';
-import { getData } from './data.js';
+import { getData } from './api.js';
+import { showAlert } from './util.js';
 
 // -----------------------------------------------------------------------
 // disabling forms
 disableForms();
 
 // -----------------------------------------------------------------------
-// getting data for offers
-const offersData = getData();
-
-// -----------------------------------------------------------------------
 // adding map
-const markersData = offersData.map((item, index) => {
-  return {
-    lat: item.location.x,
-    lng: item.location.y,
-    id: index,
-  };
-});
-
 const onMapLoad = () => {
+  const onSuccessOffersLoad = (offersData) => {
+    const markersData = offersData.map((item, index) => {
+      return {
+        lat: item.location.lat,
+        lng: item.location.lng,
+        id: index,
+      };
+    });
+
+    const getPopup = (id) => {
+      return getOfferNode(offersData[id]);
+    };
+
+    addMarkers(markersData, getPopup);
+  };
+
+  // map is loaded we can enable forms
   enableForms();
+
+  // get data for markers after map is loaded
+  getData(onSuccessOffersLoad, showAlert);
 };
 
 const onMainMarkerMoveEnd = (coords) => {
   updateAddress(coords);
 };
 
-const getPopup = (id) => {
-  return getOfferNode(offersData[id]);
-};
-
-initMap(onMapLoad, onMainMarkerMoveEnd, markersData, getPopup);
+initMap(onMapLoad, onMainMarkerMoveEnd);
 
 // -----------------------------------------------------------------------
 // adding form handlers

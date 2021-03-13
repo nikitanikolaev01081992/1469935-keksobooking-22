@@ -1,11 +1,26 @@
+// -----------------------------------------------------------------------
+// Constants
+const ALERT_STYLES = {
+  zIndex: 100,
+  position: 'absolute',
+  left: 0,
+  top: 0,
+  right: 0,
+  padding: '10px 3px',
+  fontSize: '30px',
+  textAlign: 'center',
+  backgroundColor: 'red',
+};
+
+const ALERT_TIME = 5000;
+
 //-----------------------------------------------------------------------
 const getRandomInt = (min, max) => {
   if (isNaN(min) || isNaN(min) || min < 0 || max < 0) {
     throw new Error('getRandomInt: Неверные входные параметры');
   }
 
-  let [localMin, localMax] =
-    min > max ? [Math.ceil(max), Math.floor(min)] : [Math.ceil(min), Math.floor(max)];
+  let [localMin, localMax] = min > max ? [Math.ceil(max), Math.floor(min)] : [Math.ceil(min), Math.floor(max)];
   const randValue = Math.random();
 
   return Math.floor(randValue * (localMax - localMin + 1) + localMin);
@@ -107,7 +122,7 @@ const queryNodes = (selectors, parentNode = document) => {
 };
 
 //-----------------------------------------------------------------------
-//function add generated fragment using getElement function from data array to node
+// function add generated fragment using getElement function from data array to node
 const renderItem = (node, data, getElement) => {
   if (data.length > 0) {
     const fragment = getElement(node, data);
@@ -117,6 +132,24 @@ const renderItem = (node, data, getElement) => {
   } else {
     hideElement(node);
   }
+};
+
+//-----------------------------------------------------------------------
+// function show alert message
+const showAlert = (message) => {
+  const alertContainer = document.createElement('div');
+
+  for (const key of Object.keys(ALERT_STYLES)) {
+    alertContainer.style[key] = ALERT_STYLES[key];
+  }
+
+  alertContainer.textContent = message;
+
+  document.body.append(alertContainer);
+
+  setTimeout(() => {
+    alertContainer.remove();
+  }, ALERT_TIME);
 };
 
 // -----------------------------------------------------------------------
@@ -133,5 +166,6 @@ export {
   pluralize,
   getNode,
   queryNodes,
-  renderItem
+  renderItem,
+  showAlert
 };
