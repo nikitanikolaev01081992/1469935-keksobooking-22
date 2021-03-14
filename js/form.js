@@ -1,10 +1,15 @@
 // module for controlling offer form
 import { getNode } from './util.js';
 import { MinPricesByType } from './data.js';
+import { resetForms } from './state.js';
+import { resetMainMarker } from './map.js';
+import { showSuccessMessage, showErrorMessage } from './form-messages.js';
+import { sendData } from './api.js';
 
 // -----------------------------------------------------------------------
 // Constants
 const OFFER_FORM = getNode('.notice');
+const OFFER_RESET_BUTTON = getNode('.ad-form__reset', OFFER_FORM);
 const TITLE_INPUT = getNode('#title', OFFER_FORM);
 const TYPE_INPUT = getNode('#type', OFFER_FORM);
 const PRICE_INPUT = getNode('#price', OFFER_FORM);
@@ -19,55 +24,50 @@ const ADDRESS_PRECISION = 5;
 // -----------------------------------------------------------------------
 // function validate and returns error message for title input
 const validateTitle = () => {
-  let errorMsg = '';
-
   if (TITLE_INPUT.validity.valueMissing) {
-    errorMsg = 'Заполните поле';
+    return 'Заполните поле';
   } else if (TITLE_INPUT.validity.tooShort) {
-    errorMsg = `Минимальная длина ${TITLE_INPUT.minLength} символов`;
+    return `Минимальная длина ${TITLE_INPUT.minLength} символов`;
   } else if (TITLE_INPUT.validity.tooLong) {
-    errorMsg = `Максимальная длина ${TITLE_INPUT.maxLength} символов`;
+    return `Максимальная длина ${TITLE_INPUT.maxLength} символов`;
   }
 
-  return errorMsg;
+  return '';
 };
 
 // -----------------------------------------------------------------------
 // function validate and returns error message for price input
 const validatePrice = () => {
-  let errorMsg = '';
-
   if (PRICE_INPUT.validity.valueMissing) {
-    errorMsg = 'Заполните поле';
+    return 'Заполните поле';
   } else if (PRICE_INPUT.validity.rangeUnderflow) {
-    errorMsg = `Минимальная цена: ${PRICE_INPUT.min}`;
+    return `Минимальная цена: ${PRICE_INPUT.min}`;
   } else if (PRICE_INPUT.validity.rangeOverflow) {
-    errorMsg = `Максимальная цена: ${PRICE_INPUT.max}`;
+    return `Максимальная цена: ${PRICE_INPUT.max}`;
   }
 
-  return errorMsg;
+  return '';
 };
 
 // -----------------------------------------------------------------------
 // function validate and returns error message for capacity input
 const validateCapacity = () => {
-  let errorMsg = '';
   const roomNumber = parseInt(ROOM_NUMBER_INPUT.value);
   const capacity = parseInt(CAPACITY_INPUT.value);
 
   if (CAPACITY_INPUT.validity.valueMissing) {
-    errorMsg = 'Заполните поле';
+    return 'Заполните поле';
   } else if (roomNumber === 1 && capacity !== 1) {
-    errorMsg = 'Для одной комнаты только 1 гость';
+    return 'Для одной комнаты только 1 гость';
   } else if (roomNumber === 2 && (capacity < 1 || capacity > 2)) {
-    errorMsg = 'Для двух комнат только 1 или 2 гостя';
+    return 'Для двух комнат только 1 или 2 гостя';
   } else if (roomNumber === 3 && (capacity < 1 || capacity > 3)) {
-    errorMsg = 'Для трёх комнат только 1, 2 или 3 гостя';
+    return 'Для трёх комнат только 1, 2 или 3 гостя';
   } else if (roomNumber === 100 && capacity !== 0) {
-    errorMsg = '100 комнат не для гостей';
+    return '100 комнат не для гостей';
   }
 
-  return errorMsg;
+  return '';
 };
 
 // -----------------------------------------------------------------------
@@ -112,8 +112,36 @@ const getTimeHandler = (eventNode, changingNode) => {
 };
 
 // -----------------------------------------------------------------------
+// handler for form submit
+const onSubmitForm = (evt) => {
+  evt.preventDefault();
+
+  const formData = new FormData(evt.target);
+
+  const onSuccess = () => {
+    resetForms();
+    resetMainMarker();
+    showSuccessMessage();
+  };
+
+  if (evt.target.checkValidity()) {
+    sendData(onSuccess, showErrorMessage, formData);
+  }
+};
+
+const onResetButtonClick = (evt) => {
+  evt.preventDefault();
+
+  resetForms();
+  resetMainMarker();
+};
+
+// -----------------------------------------------------------------------
 // function adds handlers to type and time inputs
 const addFormHandlers = () => {
+  OFFER_FORM.addEventListener('submit', onSubmitForm);
+  OFFER_RESET_BUTTON.addEventListener('click', onResetButtonClick);
+
   // add validation handlers
   const onTitleChange = getInputValidationHandler(TITLE_INPUT, validateTitle);
   const onPriceChange = getInputValidationHandler(PRICE_INPUT, validatePrice);
@@ -143,9 +171,7 @@ const addFormHandlers = () => {
 // -----------------------------------------------------------------------
 // function updates value of address input
 const updateAddress = (coords) => {
-  // prettier-ignore
-  const coordsText = `${coords.lat.toFixed(ADDRESS_PRECISION)}, ${coords.lng.toFixed(ADDRESS_PRECISION)}`;
-  ADDRESS_INPUT.value = coordsText;
+  ADDRESS_INPUT.value = `${coords.lat.toFixed(ADDRESS_PRECISION)}, ${coords.lng.toFixed(ADDRESS_PRECISION)}`;
 };
 
 // -----------------------------------------------------------------------

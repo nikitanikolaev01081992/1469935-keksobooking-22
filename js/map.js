@@ -31,6 +31,7 @@ const PIN_ICON_PARAMS = {
 };
 const PIN_ICON = L.icon(PIN_ICON_PARAMS);
 
+const MAIN_MARKER = L.marker(DEFAULT_COORDS, { icon: MAIN_PIN_ICON, draggable: true });
 const MARKER_GROUP = L.layerGroup([]);
 
 // -----------------------------------------------------------------------
@@ -49,25 +50,30 @@ const createMap = (onLoadFunc) => {
 };
 
 // -----------------------------------------------------------------------
-const initMap = (onLoadFunc, onMainMarkerMoveEnd, markersData = [], getPopup) => {
+// function to initialize map with main marker
+const initMap = (onLoadFunc, onMainMarkerMoveEnd) => {
   createMap(() => {
     onLoadFunc();
     onMainMarkerMoveEnd(DEFAULT_COORDS);
   });
 
   //add main marker
-  const mainMarker = L.marker(DEFAULT_COORDS, { icon: MAIN_PIN_ICON, draggable: true }).addTo(MAP_OBJ);
+  MAIN_MARKER.addTo(MAP_OBJ);
 
-  mainMarker.on('move', (evt) => {
+  MAIN_MARKER.on('move', (evt) => {
     onMainMarkerMoveEnd(evt.target.getLatLng());
   });
+};
 
+// -----------------------------------------------------------------------
+// function for adding markers with popups to map
+const addMarkers = (markersData = [], renderPopup) => {
   //create markers
   markersData.forEach(({ lat, lng, id }) => {
     const marker = L.marker({ lat, lng }, { icon: PIN_ICON, draggable: false });
 
     marker.bindPopup(() => {
-      return getPopup(id);
+      return renderPopup(id);
     });
 
     MARKER_GROUP.addLayer(marker);
@@ -78,5 +84,11 @@ const initMap = (onLoadFunc, onMainMarkerMoveEnd, markersData = [], getPopup) =>
 };
 
 // -----------------------------------------------------------------------
+// function reset main marker coodinates
+const resetMainMarker = () => {
+  MAIN_MARKER.setLatLng(DEFAULT_COORDS);
+};
+
+// -----------------------------------------------------------------------
 // EXPORTS
-export { initMap };
+export { initMap, addMarkers, resetMainMarker };

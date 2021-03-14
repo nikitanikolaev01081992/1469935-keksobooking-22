@@ -90,5 +90,13 @@ const enableForms = () => {
 };
 
 // -----------------------------------------------------------------------
+// function resets all forms
+const resetForms = () => {
+  for (const key of Object.keys(FORMS)) {
+    FORMS[key].reset();
+  }
+};
+
+// -----------------------------------------------------------------------
 // EXPORTS
-export { disableForms, enableForms };
+export { disableForms, enableForms, resetForms };
