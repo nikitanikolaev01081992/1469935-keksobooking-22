@@ -43,6 +43,8 @@ const getFilteredData = (data) => {
   return filteredData;
 };
 
+// -----------------------------------------------------------------------
+// function clears filters for data (except default)
 const clearFiltersForData = () => {
   currentFilters = {
     filterDataGlobal,
