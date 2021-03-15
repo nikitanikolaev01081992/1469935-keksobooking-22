@@ -10,18 +10,14 @@ const filterDataGlobal = (data) => {
 
 const addFilterForData = (filterName, filterValue) => {
   if (filterName === 'type') {
-    const getFilterFunc = (value) => {
-      return (data) => {
-        return data.filter((dataItem) => {
-          if (value === 'any') {
-            return true;
-          }
-          return dataItem.offer.type === value;
-        });
-      };
+    currentFilters['filterDataByType'] = (data) => {
+      return data.filter((dataItem) => {
+        if (filterValue === 'any') {
+          return true;
+        }
+        return dataItem.offer.type === filterValue;
+      });
     };
-
-    currentFilters['filterDataByType'] = getFilterFunc(filterValue);
   }
 };
 
