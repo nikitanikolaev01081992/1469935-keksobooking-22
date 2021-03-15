@@ -3,9 +3,9 @@ const DATA_URL = 'https://22.javascript.pages.academy/keksobooking/data';
 const POST_URL = 'https://22.javascript.pages.academy/keksobooking';
 
 // -----------------------------------------------------------------------
-// function get data from server and runs onSuccess/onFail callbacks
-const getData = (onSuccess, onFail) => {
-  fetch(DATA_URL)
+// function load data from server and runs onSuccess/onFail callbacks
+const loadData = (onSuccess, onFail) => {
+  return fetch(DATA_URL)
     .then((response) => {
       if (response.ok) {
         return response.json();
@@ -22,7 +22,7 @@ const getData = (onSuccess, onFail) => {
 // -----------------------------------------------------------------------
 // function sends data to server and runs onSuccess/onFail callbacks
 const sendData = (onSuccess, onFail, body) => {
-  fetch(POST_URL, { method: 'POST', body })
+  return fetch(POST_URL, { method: 'POST', body })
     .then((response) => {
       if (response.ok) {
         onSuccess();
@@ -35,4 +35,4 @@ const sendData = (onSuccess, onFail, body) => {
 
 // -----------------------------------------------------------------------
 // EXPORTS
-export { getData, sendData };
+export { loadData, sendData };

@@ -2,8 +2,7 @@
 // prettier-ignore
 import {
   queryNodes,
-  hideElement,
-  addNodeTextContent,
+  addNodeContent,
   addNodeSrc,
   renderItem,
   pluralize,
@@ -110,20 +109,15 @@ const getOfferNode = (offerData) => {
   const offerElement = OFFER_ELEMENT.cloneNode(true);
   const nodes = queryNodes(OFFER_NODE_SELECTORS, offerElement);
 
-  addNodeTextContent(nodes.title, offer.title);
-  addNodeTextContent(nodes.address, offer.address);
-  addNodeTextContent(nodes.type, TYPE_TRANSLATIONS[offer.type]);
-  addNodeTextContent(nodes.description, offer.description);
-  addNodeTextContent(nodes.capacity, getCapacityText(offer.rooms, offer.guests));
-  addNodeTextContent(nodes.time, getCheckinCheckoutText(offer.checkin, offer.checkout));
+  addNodeContent(nodes.title, offer.title);
+  addNodeContent(nodes.address, offer.address);
+  addNodeContent(nodes.type, TYPE_TRANSLATIONS[offer.type]);
+  addNodeContent(nodes.price, offer.price, true, `${offer.price} <span>₽/ночь</span>`);
+  addNodeContent(nodes.description, offer.description);
+  addNodeContent(nodes.capacity, getCapacityText(offer.rooms, offer.guests));
+  addNodeContent(nodes.time, getCheckinCheckoutText(offer.checkin, offer.checkout));
 
   addNodeSrc(nodes.avatar, offerData.author.avatar);
-
-  if (offer.price) {
-    nodes.price.innerHTML = `${offer.price} <span>₽/ночь</span>`;
-  } else {
-    hideElement(nodes.price);
-  }
 
   renderItem(nodes.features, offer.features, getFeaturesFragment);
   renderItem(nodes.photos, offer.photos, getPhotosFragment);
