@@ -1,6 +1,8 @@
 // module for map
 /* global L:readonly */
-import { getNode } from './util.js';
+import { getNode, adaptMarkersData } from './util.js';
+import { getOfferNode } from './offers.js';
+import { getData } from './store.js';
 
 // -----------------------------------------------------------------------
 // Constants
@@ -67,14 +69,15 @@ const initMap = (onLoadFunc, onMainMarkerMoveEnd) => {
 
 // -----------------------------------------------------------------------
 // function for adding markers with popups to map
-const addMarkers = (markersData = [], renderPopup) => {
+const addMarkers = () => {
   //create markers
+  const popupsData = getData();
+  const markersData = adaptMarkersData(popupsData);
+
   markersData.forEach(({ lat, lng, id }) => {
     const marker = L.marker({ lat, lng }, { icon: PIN_ICON, draggable: false });
 
-    marker.bindPopup(() => {
-      return renderPopup(id);
-    });
+    marker.bindPopup(getOfferNode(popupsData[id]));
 
     MARKER_GROUP.addLayer(marker);
   });
@@ -89,6 +92,11 @@ const resetMainMarker = () => {
   MAIN_MARKER.setLatLng(DEFAULT_COORDS);
 };
 
+const updateMarkers = () => {
+  MARKER_GROUP.clearLayers();
+  addMarkers();
+};
+
 // -----------------------------------------------------------------------
 // EXPORTS
-export { initMap, addMarkers, resetMainMarker };
+export { initMap, addMarkers, resetMainMarker, updateMarkers };

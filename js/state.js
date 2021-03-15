@@ -18,7 +18,7 @@ const FormsCssClassesDisabled = {
   MAP_FILTERS: 'map__filters--disabled',
 };
 
-const FORMS = queryNodes(FormsSelectors);
+const Forms = queryNodes(FormsSelectors);
 
 // -----------------------------------------------------------------------
 // function change state of inputs
@@ -76,27 +76,31 @@ const changeFormState = (formNode, disableCssClass, newState) => {
 // -----------------------------------------------------------------------
 // function disable forms
 const disableForms = () => {
-  for (const key of Object.keys(FORMS)) {
-    changeFormState(FORMS[key], FormsCssClassesDisabled[key], FormStates.DISABLED);
+  for (const key of Object.keys(Forms)) {
+    changeFormState(Forms[key], FormsCssClassesDisabled[key], FormStates.DISABLED);
   }
 };
 
 // -----------------------------------------------------------------------
-// function enable forms
-const enableForms = () => {
-  for (const key of Object.keys(FORMS)) {
-    changeFormState(FORMS[key], FormsCssClassesDisabled[key], FormStates.ENABLED);
-  }
+// function enable ad forms
+const enableAdForm = () => {
+  changeFormState(Forms.AD_FORM, FormsCssClassesDisabled.AD_FORM, FormStates.ENABLED);
+};
+
+// -----------------------------------------------------------------------
+// function enable filter forms
+const enableFilterForm = () => {
+  changeFormState(Forms.MAP_FILTERS, FormsCssClassesDisabled.MAP_FILTERS, FormStates.ENABLED);
 };
 
 // -----------------------------------------------------------------------
 // function resets all forms
 const resetForms = () => {
-  for (const key of Object.keys(FORMS)) {
-    FORMS[key].reset();
+  for (const key of Object.keys(Forms)) {
+    Forms[key].reset();
   }
 };
 
 // -----------------------------------------------------------------------
 // EXPORTS
-export { disableForms, enableForms, resetForms };
+export { disableForms, enableAdForm, enableFilterForm, resetForms };

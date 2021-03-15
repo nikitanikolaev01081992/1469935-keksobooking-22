@@ -1,18 +1,5 @@
-// -----------------------------------------------------------------------
-// Constants
-const ALERT_STYLES = {
-  zIndex: 100,
-  position: 'absolute',
-  left: 0,
-  top: 0,
-  right: 0,
-  padding: '10px 3px',
-  fontSize: '30px',
-  textAlign: 'center',
-  backgroundColor: 'red',
-};
-
-const ALERT_TIME = 5000;
+import { hideElement, addNodeContent, addNodeSrc, getNode, queryNodes, renderItem } from './nodes.js';
+import { showAlert } from './alert.js';
 
 //-----------------------------------------------------------------------
 const getRandomInt = (min, max) => {
@@ -58,33 +45,7 @@ const getRandArrayFromValues = (values) => {
 };
 
 //-----------------------------------------------------------------------
-// function hides dom element
-const hideElement = (element) => {
-  element.classList.add('hidden');
-};
-
-//-----------------------------------------------------------------------
-//function adds text content to dom element or hide element in case of empty content
-const addNodeTextContent = (node, content) => {
-  if (content) {
-    node.textContent = content;
-  } else {
-    hideElement(node);
-  }
-};
-
-//-----------------------------------------------------------------------
-//function adds src url to dom element or hide element in case of empty src url
-const addNodeSrc = (node, srcUrl) => {
-  if (srcUrl) {
-    node.setAttribute('src', srcUrl);
-  } else {
-    hideElement(node);
-  }
-};
-
-//-----------------------------------------------------------------------
-//function return pluralized string
+//function returns pluralized string
 const pluralize = (count, variants) => {
   const countAbs = Math.abs(count) % 100;
   const count2 = count % 10;
@@ -96,60 +57,15 @@ const pluralize = (count, variants) => {
 };
 
 //-----------------------------------------------------------------------
-//function return node by selector or throw error in case of non-existing node
-const getNode = (selector, parentNode = document) => {
-  const node = parentNode.querySelector(selector);
-
-  if (!node) {
-    throw new Error(`${selector} не найден!`);
-  }
-
-  return node;
-};
-
-//-----------------------------------------------------------------------
-//function returns object with children of given DOM container
-const queryNodes = (selectors, parentNode = document) => {
-  let nodes = {};
-
-  for (const key of Object.keys(selectors)) {
-    const childNode = getNode(selectors[key], parentNode);
-
-    nodes[key] = childNode;
-  }
-
-  return nodes;
-};
-
-//-----------------------------------------------------------------------
-// function add generated fragment using getElement function from data array to node
-const renderItem = (node, data, getElement) => {
-  if (data.length > 0) {
-    const fragment = getElement(node, data);
-
-    node.innerHTML = '';
-    node.appendChild(fragment);
-  } else {
-    hideElement(node);
-  }
-};
-
-//-----------------------------------------------------------------------
-// function show alert message
-const showAlert = (message) => {
-  const alertContainer = document.createElement('div');
-
-  for (const key of Object.keys(ALERT_STYLES)) {
-    alertContainer.style[key] = ALERT_STYLES[key];
-  }
-
-  alertContainer.textContent = message;
-
-  document.body.append(alertContainer);
-
-  setTimeout(() => {
-    alertContainer.remove();
-  }, ALERT_TIME);
+//function returns adapted data for markers [{lat, lng, id}]
+const adaptMarkersData = (data) => {
+  return data.map((item, index) => {
+    return {
+      lat: item.location.lat,
+      lng: item.location.lng,
+      id: index,
+    };
+  });
 };
 
 // -----------------------------------------------------------------------
@@ -161,11 +77,12 @@ export {
   getRandElemFromArray,
   getRandArrayFromValues,
   hideElement,
-  addNodeTextContent,
+  addNodeContent,
   addNodeSrc,
   pluralize,
   getNode,
   queryNodes,
   renderItem,
-  showAlert
+  showAlert,
+  adaptMarkersData
 };

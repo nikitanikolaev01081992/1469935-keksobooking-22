@@ -1,38 +1,36 @@
-import { disableForms, enableForms } from './state.js';
+import { disableForms, enableAdForm, enableFilterForm } from './state.js';
 import { addFormHandlers, updateAddress } from './form.js';
 import { initMap, addMarkers } from './map.js';
-import { getOfferNode } from './offers.js';
-import { getData } from './api.js';
+import { loadData } from './api.js';
 import { showAlert } from './util.js';
+import { storeData } from './store.js';
+import { addFiltersFormHandlers } from './filters-form.js';
 
 // -----------------------------------------------------------------------
-// disabling forms
+// disabling all forms
 disableForms();
 
 // -----------------------------------------------------------------------
 // adding map
+const onSuccessOffersLoad = (offersData) => {
+  // save data in store
+  storeData(offersData);
+
+  // add markers to map
+  addMarkers();
+
+  // markers are ready we can enable filters form
+  addFiltersFormHandlers();
+  enableFilterForm();
+};
+
 const onMapLoad = () => {
-  const onSuccessOffersLoad = (offersData) => {
-    const markersData = offersData.map((item, index) => {
-      return {
-        lat: item.location.lat,
-        lng: item.location.lng,
-        id: index,
-      };
-    });
-
-    const getPopup = (id) => {
-      return getOfferNode(offersData[id]);
-    };
-
-    addMarkers(markersData, getPopup);
-  };
-
-  // map is loaded we can enable forms
-  enableForms();
+  // map is loaded we can enable add form
+  addFormHandlers();
+  enableAdForm();
 
   // get data for markers after map is loaded
-  getData(onSuccessOffersLoad, showAlert);
+  loadData(onSuccessOffersLoad, showAlert);
 };
 
 const onMainMarkerMoveEnd = (coords) => {
@@ -40,7 +38,3 @@ const onMainMarkerMoveEnd = (coords) => {
 };
 
 initMap(onMapLoad, onMainMarkerMoveEnd);
-
-// -----------------------------------------------------------------------
-// adding form handlers
-addFormHandlers();
