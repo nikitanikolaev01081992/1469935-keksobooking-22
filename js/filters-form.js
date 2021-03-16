@@ -1,46 +1,63 @@
 // module for controlling filters form
-import { getNode } from './util.js';
-import { prepareData } from './store.js';
+import { debounce, getNode } from './util.js';
 import { addFilterForData, clearFiltersForData } from './data-filters.js';
-import { updateMarkers } from './map.js';
 
 // -----------------------------------------------------------------------
 // Constants
 const FILTERS_FORM = getNode('.map__filters');
-const HOUSING_TYPE_INPUT = getNode('#housing-type', FILTERS_FORM);
 
-// -----------------------------------------------------------------------
-// function update data in store and markers on map
-const releaseChanges = () => {
-  //prepare data with new filter
-  prepareData();
-
-  //update markers with new filtered data
-  updateMarkers();
+const FilterInputs = {
+  TYPE: getNode('#housing-type', FILTERS_FORM),
+  PRICE: getNode('#housing-price', FILTERS_FORM),
+  ROOMS: getNode('#housing-rooms', FILTERS_FORM),
+  GUESTS: getNode('#housing-guests', FILTERS_FORM),
+  FEATURES: getNode('#housing-features', FILTERS_FORM),
 };
 
-// -----------------------------------------------------------------------
-// handler for type input change event
-const onTypeInputChange = (evt) => {
-  //type was changed we need add new filter
-  addFilterForData('type', evt.target.value);
+const HANDLER_TIMEOUT = 500;
 
-  releaseChanges();
+// -----------------------------------------------------------------------
+// function returns handler for input change event
+const getFilterChangeHandler = (filterName, onFilterChange) => {
+  return (evt) => {
+    //type was changed we need to add new filter
+    if (filterName === 'FEATURES') {
+      const inputs = Array.from(FilterInputs.FEATURES.querySelectorAll('input:checked'));
+
+      const inputValues = inputs.map((input) => {
+        return input.value;
+      });
+
+      addFilterForData(filterName, inputValues);
+    } else {
+      addFilterForData(filterName, evt.target.value);
+    }
+
+    // do smth from main module
+    onFilterChange();
+  };
 };
 
 // -----------------------------------------------------------------------
 // function clears all data filters on reset event
-const onResetForm = () => {
-  clearFiltersForData();
-  releaseChanges();
+const getResetFormHandler = (onFilterChange) => {
+  return () => {
+    clearFiltersForData();
+
+    // do smth from main module
+    onFilterChange();
+  };
 };
 
 // -----------------------------------------------------------------------
 // function adds all hanlers to corresonding nodes
-const addFiltersFormHandlers = () => {
-  FILTERS_FORM.addEventListener('reset', onResetForm);
+const addFiltersFormHandlers = (onFilterChange) => {
+  FILTERS_FORM.addEventListener('reset', getResetFormHandler(onFilterChange));
 
-  HOUSING_TYPE_INPUT.addEventListener('change', onTypeInputChange);
+  for (const key of Object.keys(FilterInputs)) {
+    const debouncedHandler = debounce(getFilterChangeHandler(key, onFilterChange), HANDLER_TIMEOUT);
+    FilterInputs[key].addEventListener('change', debouncedHandler);
+  }
 };
 
 export { addFiltersFormHandlers };
