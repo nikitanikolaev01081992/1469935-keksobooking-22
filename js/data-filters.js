@@ -124,19 +124,19 @@ const getDataFilterByFeatures = (features) => {
 // function adds filters for data
 const addFilterForData = (filterName, filterValue) => {
   switch (filterName) {
-    case 'TYPE':
+    case 'housing-type':
       currentFilters['filterDataByType'] = getDataFilterByType(filterValue);
       break;
-    case 'PRICE':
+    case 'housing-price':
       currentFilters['filterDataByPrice'] = getDataFilterByPrice(filterValue);
       break;
-    case 'ROOMS':
+    case 'housing-rooms':
       currentFilters['filterDataByRooms'] = getDataFilterByRooms(filterValue);
       break;
-    case 'GUESTS':
+    case 'housing-guests':
       currentFilters['filterDataByGuests'] = getDataFilterByGuests(filterValue);
       break;
-    case 'FEATURES':
+    case 'features':
       currentFilters['filterDataByFeatures'] = getDataFilterByFeatures(filterValue);
       break;
     default:
