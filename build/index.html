@@ -4,13 +4,11 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" href="css/normalize.css" />
     <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="leaflet/leaflet.css" />
 
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <title>Кексобукинг</title>
 
-    <script src="js/main.js" type="module" defer></script>
-    <script src="leaflet/leaflet.js"></script>
+    <script src="js/main.bundle.js" defer></script>
   </head>
   <body>
     <main>
@@ -352,6 +350,15 @@
     <!-- Сообщение об ошибке -->
     <template id="alert">
       <div class="alert"></div>
+    </template>
+
+    <!-- Аватар пользователя -->
+    <template id="avatar-preview">
+      <img src="img/muffin-grey.svg" alt="Аватар пользователя" width="40" height="44" />
+    </template>
+
+    <template id="ad-preview">
+      <img src="" alt="Фото жилья пользователя" width="100%" />
     </template>
   </body>
 </html>

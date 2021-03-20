@@ -19,6 +19,20 @@ const ROOM_NUMBER_INPUT = getNode('#room_number', OFFER_FORM);
 const CAPACITY_INPUT = getNode('#capacity', OFFER_FORM);
 const ADDRESS_INPUT = getNode('#address', OFFER_FORM);
 
+const ImageInputs = {
+  AVATAR: {
+    inputNode: getNode('#avatar', OFFER_FORM),
+    previewContainer: getNode('.ad-form-header__preview', OFFER_FORM),
+    previewTemplate: getNode('img', getNode('#avatar-preview').content),
+    previewDefaultNode: getNode('.ad-form-header__preview img', OFFER_FORM),
+  },
+  AD_IMAGE: {
+    inputNode: getNode('#images', OFFER_FORM),
+    previewContainer: getNode('.ad-form__photo', OFFER_FORM),
+    previewTemplate: getNode('img', getNode('#ad-preview').content),
+  },
+};
+
 const ADDRESS_PRECISION = 5;
 
 // -----------------------------------------------------------------------
@@ -112,6 +126,42 @@ const getTimeHandler = (eventNode, changingNode) => {
 };
 
 // -----------------------------------------------------------------------
+// function returns handler for file input
+const getFileInputHandler = (previewContainer, imageTemplate) => {
+  return (evt) => {
+    const file = evt.target.files[0];
+
+    if (!file.type.startsWith('image/')) {
+      return;
+    }
+
+    const imageNode = imageTemplate.cloneNode(true);
+
+    const fileReader = new FileReader();
+
+    fileReader.addEventListener('load', (evt) => {
+      imageNode.setAttribute('src', evt.target.result);
+
+      previewContainer.innerHTML = '';
+      previewContainer.append(imageNode);
+    });
+
+    fileReader.readAsDataURL(file);
+  };
+};
+
+const resetImageInputs = () => {
+  for (const key of Object.keys(ImageInputs)) {
+    const { previewContainer, previewDefaultNode } = ImageInputs[key];
+    previewContainer.innerHTML = '';
+
+    if (previewDefaultNode) {
+      previewContainer.append(previewDefaultNode);
+    }
+  }
+};
+
+// -----------------------------------------------------------------------
 // handler for form submit
 const onSubmitForm = (evt) => {
   evt.preventDefault();
@@ -120,6 +170,7 @@ const onSubmitForm = (evt) => {
 
   const onSuccess = () => {
     resetForms();
+    resetImageInputs();
     resetMainMarker();
     showSuccessMessage();
   };
@@ -129,10 +180,13 @@ const onSubmitForm = (evt) => {
   }
 };
 
+// -----------------------------------------------------------------------
+// handler for form reset
 const onResetButtonClick = (evt) => {
   evt.preventDefault();
 
   resetForms();
+  resetImageInputs();
   resetMainMarker();
 };
 
@@ -166,6 +220,12 @@ const addFormHandlers = () => {
 
   TIME_IN_INPUT.addEventListener('change', onCheckinChange);
   TIME_OUT_INPUT.addEventListener('change', onCheckoutChange);
+
+  // adding handlers for previews
+  for (const key of Object.keys(ImageInputs)) {
+    const { inputNode, previewContainer, previewTemplate } = ImageInputs[key];
+    inputNode.addEventListener('change', getFileInputHandler(previewContainer, previewTemplate));
+  }
 };
 
 // -----------------------------------------------------------------------
