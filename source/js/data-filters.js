@@ -3,141 +3,125 @@
 const MAX_ITEM_COUNT = 10;
 
 // -----------------------------------------------------------------------
-// global filter function for data
-const filterDataGlobal = (data) => {
-  return data.slice(0, MAX_ITEM_COUNT);
-};
-
-// -----------------------------------------------------------------------
-// function returns function to filter data by type
-const getDataFilterByType = (value) => {
-  return (data) => {
-    return data.filter((dataItem) => {
-      if (value === 'any') {
-        return true;
-      }
-      return dataItem.offer.type === value;
-    });
-  };
-};
-
-// -----------------------------------------------------------------------
-// function returns function to filter data by price
-const getDataFilterByPrice = (value) => {
-  return (data) => {
-    return data.filter((dataItem) => {
-      const offerPrice = parseInt(dataItem.offer.price);
-
-      if (isNaN(offerPrice)) {
-        throw new Error('filterDataByPrice: offerPrice не число!');
-      }
-
-      switch (value) {
-        case 'any':
-          return true;
-        case 'middle':
-          return offerPrice >= 10000 && offerPrice <= 50000;
-        case 'low':
-          return offerPrice <= 10000;
-        case 'high':
-          return offerPrice >= 50000;
-      }
-    });
-  };
-};
-
-// -----------------------------------------------------------------------
-// function returns function to filter data by rooms
-const getDataFilterByRooms = (value) => {
-  return (data) => {
-    return data.filter((dataItem) => {
-      if (value === 'any') {
-        return true;
-      }
-
-      const offerRooms = parseInt(dataItem.offer.rooms);
-
-      if (isNaN(offerRooms)) {
-        throw new Error('filterDataByRooms: offerRooms не число!');
-      }
-
-      const inputRooms = parseInt(value);
-
-      if (isNaN(inputRooms)) {
-        throw new Error('filterDataByRooms: inputRooms не число!');
-      }
-
-      return offerRooms === inputRooms;
-    });
-  };
-};
-
-// -----------------------------------------------------------------------
-// function returns function to filter data by guests
-const getDataFilterByGuests = (value) => {
-  return (data) => {
-    return data.filter((dataItem) => {
-      if (value === 'any') {
-        return true;
-      }
-
-      const offerGuests = parseInt(dataItem.offer.guests);
-
-      if (isNaN(offerGuests)) {
-        throw new Error('filterDataByGuests: offerGuests не число!');
-      }
-
-      const inputGuests = parseInt(value);
-
-      if (isNaN(inputGuests)) {
-        throw new Error('filterDataByGuests: inputGuests не число!');
-      }
-
-      return offerGuests === inputGuests;
-    });
-  };
-};
-
-// -----------------------------------------------------------------------
-// function returns function to filter data by features
-const getDataFilterByFeatures = (features) => {
-  return (data) => {
-    return data.filter((dataItem) => {
-      if (features.length === 0) {
-        return true;
-      }
-
-      const offerFeatures = dataItem.offer.features;
-      for (const feature of features) {
-        if (!offerFeatures.includes(feature)) {
-          //offer doesn't contains this feature
-          return false;
-        }
-      }
-
+// function returns function to check data item by type
+const getCheckerByType = (inputValue) => {
+  return (dataItem) => {
+    if (inputValue === 'any') {
       return true;
-    });
+    }
+    return dataItem.offer.type === inputValue;
+  };
+};
+
+// -----------------------------------------------------------------------
+// function returns function to check data item by price
+const getCheckerByPrice = (inputValue) => {
+  return (dataItem) => {
+    const offerPrice = parseInt(dataItem.offer.price);
+
+    if (isNaN(offerPrice)) {
+      throw new Error('checkByPrice: offerPrice не число!');
+    }
+
+    switch (inputValue) {
+      case 'any':
+        return true;
+      case 'middle':
+        return offerPrice >= 10000 && offerPrice <= 50000;
+      case 'low':
+        return offerPrice <= 10000;
+      case 'high':
+        return offerPrice >= 50000;
+    }
+  };
+};
+
+// -----------------------------------------------------------------------
+// function returns function to check data item by rooms
+const getCheckerByRooms = (inputValue) => {
+  return (dataItem) => {
+    if (inputValue === 'any') {
+      return true;
+    }
+
+    const offerRooms = parseInt(dataItem.offer.rooms);
+
+    if (isNaN(offerRooms)) {
+      throw new Error('checkByRooms: offerRooms не число!');
+    }
+
+    const inputRooms = parseInt(inputValue);
+
+    if (isNaN(inputRooms)) {
+      throw new Error('checkByRooms: inputRooms не число!');
+    }
+
+    return offerRooms === inputRooms;
+  };
+};
+
+// -----------------------------------------------------------------------
+// function returns function to check data item by guests
+const getCheckerByGuests = (inputValue) => {
+  return (dataItem) => {
+    if (inputValue === 'any') {
+      return true;
+    }
+
+    const offerGuests = parseInt(dataItem.offer.guests);
+
+    if (isNaN(offerGuests)) {
+      throw new Error('checkByGuests: offerGuests не число!');
+    }
+
+    const inputGuests = parseInt(inputValue);
+
+    if (isNaN(inputGuests)) {
+      throw new Error('checkByGuests: inputGuests не число!');
+    }
+
+    return offerGuests === inputGuests;
+  };
+};
+
+// -----------------------------------------------------------------------
+// function returns function to check data item by features
+const getCheckerByFeatures = (features) => {
+  return (dataItem) => {
+    if (features.length === 0) {
+      return true;
+    }
+
+    const offerFeatures = dataItem.offer.features;
+    for (const feature of features) {
+      if (!offerFeatures.includes(feature)) {
+        //offer doesn't contains this feature
+        return false;
+      }
+    }
+
+    return true;
   };
 };
 
 // -----------------------------------------------------------------------
 // function adds filters for data
-const addFilterForData = (filterName, filterValue) => {
-  switch (filterName) {
+const addFilterForData = (checkerName, inputValue) => {
+  switch (checkerName) {
     case 'housing-type':
-      currentFilters['filterDataByType'] = getDataFilterByType(filterValue);
+      currentCheckers['checkByType'] = getCheckerByType(inputValue);
       break;
     case 'housing-price':
-      currentFilters['filterDataByPrice'] = getDataFilterByPrice(filterValue);
+      currentCheckers['checkByPrice'] = getCheckerByPrice(inputValue);
       break;
     case 'housing-rooms':
-      currentFilters['filterDataByRooms'] = getDataFilterByRooms(filterValue);
+      currentCheckers['checkByRooms'] = getCheckerByRooms(inputValue);
       break;
     case 'housing-guests':
-      currentFilters['filterDataByGuests'] = getDataFilterByGuests(filterValue);
+      currentCheckers['checkByGuests'] = getCheckerByGuests(inputValue);
       break;
     case 'features':
-      currentFilters['filterDataByFeatures'] = getDataFilterByFeatures(filterValue);
+      currentCheckers['checkByFeatures'] = getCheckerByFeatures(inputValue);
       break;
     default:
       throw new Error('addFilterForData: неподдерживаемый тип фильтра!');
@@ -145,18 +129,33 @@ const addFilterForData = (filterName, filterValue) => {
 };
 
 // -----------------------------------------------------------------------
-// current data filters
-let currentFilters = {
-  filterDataGlobal,
-};
+// current data checkers
+let currentCheckers = {};
 
 // -----------------------------------------------------------------------
 // function returns filtered data with all applied filters
 const getFilteredData = (data) => {
-  let filteredData = data.slice();
+  let filteredData = [];
 
-  for (const filter of Object.keys(currentFilters)) {
-    filteredData = currentFilters[filter](filteredData);
+  for (let i = 0; i < data.length; i++) {
+    const dataItem = data[i];
+    let isSuitable = true;
+
+    // check current data item by all current filters
+    for (const key of Object.keys(currentCheckers)) {
+      if (!currentCheckers[key](dataItem)) {
+        isSuitable = false;
+        break;
+      }
+    }
+
+    if (isSuitable) {
+      filteredData.push(dataItem);
+    }
+
+    if (filteredData.length === MAX_ITEM_COUNT) {
+      break;
+    }
   }
 
   return filteredData;
@@ -165,9 +164,7 @@ const getFilteredData = (data) => {
 // -----------------------------------------------------------------------
 // function clears filters for data (except default)
 const clearFiltersForData = () => {
-  currentFilters = {
-    filterDataGlobal,
-  };
+  currentCheckers = {};
 };
 
 export { getFilteredData, addFilterForData, clearFiltersForData };
