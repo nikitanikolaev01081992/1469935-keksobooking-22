@@ -68,6 +68,20 @@ const adaptMarkersData = (data) => {
   });
 };
 
+const debounce = (func, ms) => {
+  let timeoutId = null;
+
+  return (...args) => {
+    const callLater = () => {
+      timeoutId = null;
+      func(...args);
+    };
+
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(callLater, ms);
+  };
+};
+
 // -----------------------------------------------------------------------
 // EXPORTS
 // prettier-ignore
@@ -84,5 +98,6 @@ export {
   queryNodes,
   renderItem,
   showAlert,
-  adaptMarkersData
+  adaptMarkersData,
+  debounce
 };

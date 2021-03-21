@@ -1,5 +1,7 @@
 // module for map
-/* global L:readonly */
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
 import { getNode, adaptMarkersData } from './util.js';
 import { getOfferNode } from './offers.js';
 import { getData } from './store.js';
