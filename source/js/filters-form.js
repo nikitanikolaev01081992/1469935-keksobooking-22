@@ -28,9 +28,7 @@ const getFormChangeHandler = (onFilterChange) => {
     if (FEATURES_FIELDSET.contains(target)) {
       const inputs = Array.from(FEATURES_FIELDSET.querySelectorAll('input:checked'));
 
-      const inputValues = inputs.map((input) => {
-        return input.value;
-      });
+      const inputValues = inputs.map((input) => input.value);
 
       addFilterForData('features', inputValues);
     } else {
