@@ -93,14 +93,10 @@ const getCheckerByFeatures = (features) => {
     }
 
     const offerFeatures = dataItem.offer.features;
-    for (const feature of features) {
-      if (!offerFeatures.includes(feature)) {
-        //offer doesn't contains this feature
-        return false;
-      }
-    }
 
-    return true;
+    return features.every((feature) => {
+      return offerFeatures.includes(feature);
+    });
   };
 };
 

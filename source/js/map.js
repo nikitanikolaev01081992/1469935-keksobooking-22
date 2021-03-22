@@ -16,7 +16,7 @@ const DEFAULT_COORDS = {
   lng: 139.7034,
 };
 
-const DEFATUL_MAP_ZOOM = 12;
+const DEFAULT_MAP_ZOOM = 12;
 
 const LAYER_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const LAYER_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
@@ -46,7 +46,7 @@ const createMap = (onLoadFunc) => {
   }
 
   // prettier-ignore
-  MAP_OBJ.setView(DEFAULT_COORDS, DEFATUL_MAP_ZOOM);
+  MAP_OBJ.setView(DEFAULT_COORDS, DEFAULT_MAP_ZOOM);
 
   L.tileLayer(LAYER_URL, {
     attribution: LAYER_ATTRIBUTION,
@@ -89,11 +89,14 @@ const addMarkers = () => {
 };
 
 // -----------------------------------------------------------------------
-// function reset main marker coodinates
-const resetMainMarker = () => {
+// function resets map
+const resetMap = () => {
   MAIN_MARKER.setLatLng(DEFAULT_COORDS);
+  MAP_OBJ.setView(DEFAULT_COORDS, DEFAULT_MAP_ZOOM);
 };
 
+// -----------------------------------------------------------------------
+// function clears markers form map and adds new
 const updateMarkers = () => {
   MARKER_GROUP.clearLayers();
   addMarkers();
@@ -101,4 +104,4 @@ const updateMarkers = () => {
 
 // -----------------------------------------------------------------------
 // EXPORTS
-export { initMap, addMarkers, resetMainMarker, updateMarkers };
+export { initMap, addMarkers, resetMap, updateMarkers };
