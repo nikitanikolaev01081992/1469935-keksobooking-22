@@ -2,7 +2,7 @@
 import { getNode } from './util.js';
 import { MinPricesByType } from './data.js';
 import { resetForms } from './state.js';
-import { resetMainMarker } from './map.js';
+import { resetMap } from './map.js';
 import { showSuccessMessage, showErrorMessage } from './form-messages.js';
 import { sendData } from './api.js';
 
@@ -171,7 +171,7 @@ const onSubmitForm = (evt) => {
   const onSuccess = () => {
     resetForms();
     resetImageInputs();
-    resetMainMarker();
+    resetMap();
     showSuccessMessage();
   };
 
@@ -187,35 +187,39 @@ const onResetButtonClick = (evt) => {
 
   resetForms();
   resetImageInputs();
-  resetMainMarker();
+  resetMap();
 };
 
 // -----------------------------------------------------------------------
-// function adds handlers to type and time inputs
+
+// validation handlers
+const onTitleChange = getInputValidationHandler(TITLE_INPUT, validateTitle);
+const onPriceChange = getInputValidationHandler(PRICE_INPUT, validatePrice);
+const onCapacityChange = getInputValidationHandler(CAPACITY_INPUT, validateCapacity);
+
+// handler for type input
+const onTypeChange = getPlaceTypeHandler(onPriceChange);
+
+// handler for time inputs
+const onCheckinChange = getTimeHandler(TIME_IN_INPUT, TIME_OUT_INPUT);
+const onCheckoutChange = getTimeHandler(TIME_OUT_INPUT, TIME_IN_INPUT);
+
+// function adds handlers to all inputs in form
 const addFormHandlers = () => {
   OFFER_FORM.addEventListener('submit', onSubmitForm);
   OFFER_RESET_BUTTON.addEventListener('click', onResetButtonClick);
-
-  // add validation handlers
-  const onTitleChange = getInputValidationHandler(TITLE_INPUT, validateTitle);
-  const onPriceChange = getInputValidationHandler(PRICE_INPUT, validatePrice);
-  const onCapacityChange = getInputValidationHandler(CAPACITY_INPUT, validateCapacity);
 
   TITLE_INPUT.addEventListener('change', onTitleChange);
   PRICE_INPUT.addEventListener('change', onPriceChange);
   ROOM_NUMBER_INPUT.addEventListener('change', onCapacityChange);
   CAPACITY_INPUT.addEventListener('change', onCapacityChange);
 
-  // adding handler to type input
-  const onTypeChange = getPlaceTypeHandler(onPriceChange);
+  // trigger handler to make inputs correct even if html is incorrect
   onTypeChange();
 
   TYPE_INPUT.addEventListener('change', onTypeChange);
 
-  // adding handler to time inputs
-  const onCheckinChange = getTimeHandler(TIME_IN_INPUT, TIME_OUT_INPUT);
-  const onCheckoutChange = getTimeHandler(TIME_OUT_INPUT, TIME_IN_INPUT);
-
+  // trigger handler to make inputs correct even if html is incorrect
   onCheckinChange();
 
   TIME_IN_INPUT.addEventListener('change', onCheckinChange);
