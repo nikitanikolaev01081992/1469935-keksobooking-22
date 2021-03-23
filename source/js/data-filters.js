@@ -1,6 +1,7 @@
+import { MAX_ITEM_COUNT, PriceBounds } from './constants.js';
+
 // -----------------------------------------------------------------------
 // Constants, Enums
-const MAX_ITEM_COUNT = 10;
 
 // -----------------------------------------------------------------------
 // function returns function to check data item by type
@@ -27,61 +28,47 @@ const getCheckerByPrice = (inputValue) => {
       case 'any':
         return true;
       case 'middle':
-        return offerPrice >= 10000 && offerPrice <= 50000;
+        return offerPrice >= PriceBounds.MIDDLE && offerPrice <= PriceBounds.HIGH;
       case 'low':
-        return offerPrice <= 10000;
+        return offerPrice <= PriceBounds.MIDDLE;
       case 'high':
-        return offerPrice >= 50000;
+        return offerPrice >= PriceBounds.HIGH;
     }
   };
+};
+
+// -----------------------------------------------------------------------
+// function checks if value from input equals value from offer
+const checkByRoomsOrGuests = (inputValue, offerValue) => {
+  if (inputValue === 'any') {
+    return true;
+  }
+
+  const offerValueNumber = parseInt(offerValue);
+
+  if (isNaN(offerValueNumber)) {
+    throw new Error('checkerByRoomsOrGuests: offerValueNumber не число!');
+  }
+
+  const inputValueNumber = parseInt(inputValue);
+
+  if (isNaN(inputValueNumber)) {
+    throw new Error('checkerByRoomsOrGuests: inputValueNumber не число!');
+  }
+
+  return inputValueNumber === offerValueNumber;
 };
 
 // -----------------------------------------------------------------------
 // function returns function to check data item by rooms
 const getCheckerByRooms = (inputValue) => {
-  return (dataItem) => {
-    if (inputValue === 'any') {
-      return true;
-    }
-
-    const offerRooms = parseInt(dataItem.offer.rooms);
-
-    if (isNaN(offerRooms)) {
-      throw new Error('checkByRooms: offerRooms не число!');
-    }
-
-    const inputRooms = parseInt(inputValue);
-
-    if (isNaN(inputRooms)) {
-      throw new Error('checkByRooms: inputRooms не число!');
-    }
-
-    return offerRooms === inputRooms;
-  };
+  return (dataItem) => checkByRoomsOrGuests(inputValue, dataItem.offer.rooms);
 };
 
 // -----------------------------------------------------------------------
 // function returns function to check data item by guests
 const getCheckerByGuests = (inputValue) => {
-  return (dataItem) => {
-    if (inputValue === 'any') {
-      return true;
-    }
-
-    const offerGuests = parseInt(dataItem.offer.guests);
-
-    if (isNaN(offerGuests)) {
-      throw new Error('checkByGuests: offerGuests не число!');
-    }
-
-    const inputGuests = parseInt(inputValue);
-
-    if (isNaN(inputGuests)) {
-      throw new Error('checkByGuests: inputGuests не число!');
-    }
-
-    return offerGuests === inputGuests;
-  };
+  return (dataItem) => checkByRoomsOrGuests(inputValue, dataItem.offer.guests);
 };
 
 // -----------------------------------------------------------------------

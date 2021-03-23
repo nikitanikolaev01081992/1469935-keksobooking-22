@@ -25,14 +25,14 @@ const getFormChangeHandler = (onFilterChange) => {
     const target = evt.target;
 
     // we need change filters for data
-    if (FEATURES_FIELDSET.contains(target)) {
+    if (target.getAttribute('name') !== 'features') {
+      addFilterForData(target.name, target.value);
+    } else {
       const inputs = Array.from(FEATURES_FIELDSET.querySelectorAll('input:checked'));
 
       const inputValues = inputs.map((input) => input.value);
 
       addFilterForData('features', inputValues);
-    } else {
-      addFilterForData(target.name, target.value);
     }
 
     // do smth from main module
