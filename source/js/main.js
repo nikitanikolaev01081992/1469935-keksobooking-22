@@ -31,8 +31,11 @@ const onSuccessOffersLoad = (offersData) => {
   // save data in store
   storeData(offersData);
 
+  //apply standard filters to data
+  prepareData();
+
   // add markers to map
-  const markersData = adaptMarkersData(offersData);
+  const markersData = adaptMarkersData(getData());
   addMarkers(markersData, renderPopup);
 
   // markers are ready we can enable filters form
