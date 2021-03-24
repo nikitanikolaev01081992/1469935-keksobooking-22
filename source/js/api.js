@@ -26,9 +26,9 @@ const sendData = (onSuccess, onFail, body) => {
     .then((response) => {
       if (response.ok) {
         onSuccess();
+      } else {
+        throw new Error(`${response.status}`);
       }
-
-      throw new Error(`${response.status}`);
     })
     .catch(onFail);
 };

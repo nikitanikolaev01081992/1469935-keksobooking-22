@@ -1,6 +1,6 @@
 // module for controlling offer form
 import { getNode } from './util.js';
-import { MinPricesByType } from './data.js';
+import { MinPricesByType } from './constants.js';
 import { resetForms } from './state.js';
 import { resetMap } from './map.js';
 import { showSuccessMessage, showErrorMessage } from './form-messages.js';

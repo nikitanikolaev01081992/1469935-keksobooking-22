@@ -7,6 +7,13 @@ const PriceBounds = {
   HIGH: 50000,
 };
 
+const MinPricesByType = {
+  PALACE: 10000,
+  HOUSE: 5000,
+  FLAT: 1000,
+  BUNGALOW: 0,
+};
+
 // -----------------------------------------------------------------------
 // exports
-export { MAX_ITEM_COUNT, PriceBounds };
+export { MAX_ITEM_COUNT, PriceBounds, MinPricesByType };
