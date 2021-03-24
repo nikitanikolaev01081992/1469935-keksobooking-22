@@ -2,9 +2,24 @@ import { MAX_ITEM_COUNT, PriceBounds } from './constants.js';
 
 // -----------------------------------------------------------------------
 // Constants, Enums
+const CheckerNames = {
+  TYPE: 'housing-type',
+  PRICE: 'housing-price',
+  ROOMS: 'housing-rooms',
+  GUESTS: 'housing-guests',
+  FEATURES: 'features',
+};
 
 // -----------------------------------------------------------------------
 // function returns function to check data item by type
+
+const PriceInputValues = {
+  ANY: 'any',
+  LOW: 'low',
+  MIDDLE: 'middle',
+  HIGH: 'high',
+};
+
 const getCheckerByType = (inputValue) => {
   return (dataItem) => {
     if (inputValue === 'any') {
@@ -25,13 +40,13 @@ const getCheckerByPrice = (inputValue) => {
     }
 
     switch (inputValue) {
-      case 'any':
+      case PriceInputValues.ANY:
         return true;
-      case 'middle':
+      case PriceInputValues.MIDDLE:
         return offerPrice >= PriceBounds.MIDDLE && offerPrice <= PriceBounds.HIGH;
-      case 'low':
+      case PriceInputValues.LOW:
         return offerPrice <= PriceBounds.MIDDLE;
-      case 'high':
+      case PriceInputValues.HIGH:
         return offerPrice >= PriceBounds.HIGH;
     }
   };
@@ -91,20 +106,20 @@ const getCheckerByFeatures = (features) => {
 // function adds filters for data
 const addFilterForData = (checkerName, inputValue) => {
   switch (checkerName) {
-    case 'housing-type':
-      currentCheckers['checkByType'] = getCheckerByType(inputValue);
+    case CheckerNames.TYPE:
+      currentCheckers.checkByType = getCheckerByType(inputValue);
       break;
-    case 'housing-price':
-      currentCheckers['checkByPrice'] = getCheckerByPrice(inputValue);
+    case CheckerNames.PRICE:
+      currentCheckers.checkByPrice = getCheckerByPrice(inputValue);
       break;
-    case 'housing-rooms':
-      currentCheckers['checkByRooms'] = getCheckerByRooms(inputValue);
+    case CheckerNames.ROOMS:
+      currentCheckers.checkByRooms = getCheckerByRooms(inputValue);
       break;
-    case 'housing-guests':
-      currentCheckers['checkByGuests'] = getCheckerByGuests(inputValue);
+    case CheckerNames.GUESTS:
+      currentCheckers.checkByGuests = getCheckerByGuests(inputValue);
       break;
-    case 'features':
-      currentCheckers['checkByFeatures'] = getCheckerByFeatures(inputValue);
+    case CheckerNames.FEATURES:
+      currentCheckers.checkByFeatures = getCheckerByFeatures(inputValue);
       break;
     default:
       throw new Error('addFilterForData: неподдерживаемый тип фильтра!');

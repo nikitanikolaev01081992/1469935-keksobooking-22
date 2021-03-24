@@ -10,14 +10,17 @@ import { sendData } from './api.js';
 // Constants
 const OFFER_FORM = getNode('.notice');
 const OFFER_RESET_BUTTON = getNode('.ad-form__reset', OFFER_FORM);
-const TITLE_INPUT = getNode('#title', OFFER_FORM);
-const TYPE_INPUT = getNode('#type', OFFER_FORM);
-const PRICE_INPUT = getNode('#price', OFFER_FORM);
-const TIME_IN_INPUT = getNode('#timein', OFFER_FORM);
-const TIME_OUT_INPUT = getNode('#timeout', OFFER_FORM);
-const ROOM_NUMBER_INPUT = getNode('#room_number', OFFER_FORM);
-const CAPACITY_INPUT = getNode('#capacity', OFFER_FORM);
-const ADDRESS_INPUT = getNode('#address', OFFER_FORM);
+
+const OfferFormInputs = {
+  TITLE: getNode('#title', OFFER_FORM),
+  TYPE: getNode('#type', OFFER_FORM),
+  PRICE: getNode('#price', OFFER_FORM),
+  TIME_IN: getNode('#timein', OFFER_FORM),
+  TIME_OUT: getNode('#timeout', OFFER_FORM),
+  ROOMS: getNode('#room_number', OFFER_FORM),
+  CAPACITY: getNode('#capacity', OFFER_FORM),
+  ADDRESS: getNode('#address', OFFER_FORM),
+};
 
 const ImageInputs = {
   AVATAR: {
@@ -38,12 +41,12 @@ const ADDRESS_PRECISION = 5;
 // -----------------------------------------------------------------------
 // function validate and returns error message for title input
 const validateTitle = () => {
-  if (TITLE_INPUT.validity.valueMissing) {
+  if (OfferFormInputs.TITLE.validity.valueMissing) {
     return 'Заполните поле';
-  } else if (TITLE_INPUT.validity.tooShort) {
-    return `Минимальная длина ${TITLE_INPUT.minLength} символов`;
-  } else if (TITLE_INPUT.validity.tooLong) {
-    return `Максимальная длина ${TITLE_INPUT.maxLength} символов`;
+  } else if (OfferFormInputs.TITLE.validity.tooShort) {
+    return `Минимальная длина ${OfferFormInputs.TITLE.minLength} символов`;
+  } else if (OfferFormInputs.TITLE.validity.tooLong) {
+    return `Максимальная длина ${OfferFormInputs.TITLE.maxLength} символов`;
   }
 
   return '';
@@ -52,12 +55,12 @@ const validateTitle = () => {
 // -----------------------------------------------------------------------
 // function validate and returns error message for price input
 const validatePrice = () => {
-  if (PRICE_INPUT.validity.valueMissing) {
+  if (OfferFormInputs.PRICE.validity.valueMissing) {
     return 'Заполните поле';
-  } else if (PRICE_INPUT.validity.rangeUnderflow) {
-    return `Минимальная цена: ${PRICE_INPUT.min}`;
-  } else if (PRICE_INPUT.validity.rangeOverflow) {
-    return `Максимальная цена: ${PRICE_INPUT.max}`;
+  } else if (OfferFormInputs.PRICE.validity.rangeUnderflow) {
+    return `Минимальная цена: ${OfferFormInputs.PRICE.min}`;
+  } else if (OfferFormInputs.PRICE.validity.rangeOverflow) {
+    return `Максимальная цена: ${OfferFormInputs.PRICE.max}`;
   }
 
   return '';
@@ -66,10 +69,10 @@ const validatePrice = () => {
 // -----------------------------------------------------------------------
 // function validate and returns error message for capacity input
 const validateCapacity = () => {
-  const roomNumber = parseInt(ROOM_NUMBER_INPUT.value);
-  const capacity = parseInt(CAPACITY_INPUT.value);
+  const roomNumber = parseInt(OfferFormInputs.ROOMS.value);
+  const capacity = parseInt(OfferFormInputs.CAPACITY.value);
 
-  if (CAPACITY_INPUT.validity.valueMissing) {
+  if (OfferFormInputs.CAPACITY.validity.valueMissing) {
     return 'Заполните поле';
   } else if (roomNumber === 1 && capacity !== 1) {
     return 'Для одной комнаты только 1 гость';
@@ -88,8 +91,8 @@ const validateCapacity = () => {
 // function returns change handler fot type input
 const getPlaceTypeHandler = (priceValidtionFunc) => {
   return () => {
-    const type = TYPE_INPUT.value;
-    const minAttr = PRICE_INPUT.getAttribute('min');
+    const type = OfferFormInputs.TYPE.value;
+    const minAttr = OfferFormInputs.PRICE.getAttribute('min');
     const oldMinPrice = parseInt(minAttr ? minAttr : 0);
     const newMinPrice = MinPricesByType[type.toUpperCase()];
 
@@ -98,8 +101,8 @@ const getPlaceTypeHandler = (priceValidtionFunc) => {
     }
 
     if (newMinPrice !== oldMinPrice) {
-      PRICE_INPUT.setAttribute('min', newMinPrice);
-      PRICE_INPUT.setAttribute('placeholder', newMinPrice);
+      OfferFormInputs.PRICE.setAttribute('min', newMinPrice);
+      OfferFormInputs.PRICE.setAttribute('placeholder', newMinPrice);
 
       //trigger validation for price because attr 'min' was changed
       priceValidtionFunc();
@@ -150,6 +153,8 @@ const getFileInputHandler = (previewContainer, imageTemplate) => {
   };
 };
 
+// -----------------------------------------------------------------------
+// function resets input with file(image) inputs
 const resetImageInputs = () => {
   for (const key of Object.keys(ImageInputs)) {
     const { previewContainer, previewDefaultNode } = ImageInputs[key];
@@ -193,37 +198,37 @@ const onResetButtonClick = (evt) => {
 // -----------------------------------------------------------------------
 
 // validation handlers
-const onTitleChange = getInputValidationHandler(TITLE_INPUT, validateTitle);
-const onPriceChange = getInputValidationHandler(PRICE_INPUT, validatePrice);
-const onCapacityChange = getInputValidationHandler(CAPACITY_INPUT, validateCapacity);
+const onTitleChange = getInputValidationHandler(OfferFormInputs.TITLE, validateTitle);
+const onPriceChange = getInputValidationHandler(OfferFormInputs.PRICE, validatePrice);
+const onCapacityChange = getInputValidationHandler(OfferFormInputs.CAPACITY, validateCapacity);
 
 // handler for type input
 const onTypeChange = getPlaceTypeHandler(onPriceChange);
 
 // handler for time inputs
-const onCheckinChange = getTimeHandler(TIME_IN_INPUT, TIME_OUT_INPUT);
-const onCheckoutChange = getTimeHandler(TIME_OUT_INPUT, TIME_IN_INPUT);
+const onCheckinChange = getTimeHandler(OfferFormInputs.TIME_IN, OfferFormInputs.TIME_OUT);
+const onCheckoutChange = getTimeHandler(OfferFormInputs.TIME_OUT, OfferFormInputs.TIME_IN);
 
 // function adds handlers to all inputs in form
 const addFormHandlers = () => {
   OFFER_FORM.addEventListener('submit', onSubmitForm);
   OFFER_RESET_BUTTON.addEventListener('click', onResetButtonClick);
 
-  TITLE_INPUT.addEventListener('change', onTitleChange);
-  PRICE_INPUT.addEventListener('change', onPriceChange);
-  ROOM_NUMBER_INPUT.addEventListener('change', onCapacityChange);
-  CAPACITY_INPUT.addEventListener('change', onCapacityChange);
+  OfferFormInputs.TITLE.addEventListener('change', onTitleChange);
+  OfferFormInputs.PRICE.addEventListener('change', onPriceChange);
+  OfferFormInputs.ROOMS.addEventListener('change', onCapacityChange);
+  OfferFormInputs.CAPACITY.addEventListener('change', onCapacityChange);
 
   // trigger handler to make inputs correct even if html is incorrect
   onTypeChange();
 
-  TYPE_INPUT.addEventListener('change', onTypeChange);
+  OfferFormInputs.TYPE.addEventListener('change', onTypeChange);
 
   // trigger handler to make inputs correct even if html is incorrect
   onCheckinChange();
 
-  TIME_IN_INPUT.addEventListener('change', onCheckinChange);
-  TIME_OUT_INPUT.addEventListener('change', onCheckoutChange);
+  OfferFormInputs.TIME_IN.addEventListener('change', onCheckinChange);
+  OfferFormInputs.TIME_OUT.addEventListener('change', onCheckoutChange);
 
   // adding handlers for previews
   for (const key of Object.keys(ImageInputs)) {
@@ -235,7 +240,7 @@ const addFormHandlers = () => {
 // -----------------------------------------------------------------------
 // function updates value of address input
 const updateAddress = (coords) => {
-  ADDRESS_INPUT.value = `${coords.lat.toFixed(ADDRESS_PRECISION)}, ${coords.lng.toFixed(ADDRESS_PRECISION)}`;
+  OfferFormInputs.ADDRESS.value = `${coords.lat.toFixed(ADDRESS_PRECISION)}, ${coords.lng.toFixed(ADDRESS_PRECISION)}`;
 };
 
 // -----------------------------------------------------------------------

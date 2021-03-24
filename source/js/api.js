@@ -11,7 +11,7 @@ const loadData = (onSuccess, onFail) => {
         return response.json();
       }
 
-      throw new Error(`Get request error ${response.status} ${response.statusText}`);
+      throw new Error(`${response.status}`);
     })
     .then((data) => {
       onSuccess(data);
@@ -26,9 +26,9 @@ const sendData = (onSuccess, onFail, body) => {
     .then((response) => {
       if (response.ok) {
         onSuccess();
-      } else {
-        throw new Error(`Send request error ${response.status} ${response.statusText}`);
       }
+
+      throw new Error(`${response.status}`);
     })
     .catch(onFail);
 };

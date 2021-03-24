@@ -5,12 +5,16 @@ import { getNode } from './nodes.js';
 const ALERT_TEMPLATE = getNode('#alert');
 const ALERT_NODE = getNode('.alert', ALERT_TEMPLATE.content);
 
-const ALERT_TIME = 5000;
+const ALERT_TIME = 20000;
+
+const AlertMessages = {
+  GET: 'Не удалось загрузить данные. Ошибка - ',
+};
 
 //-----------------------------------------------------------------------
 // function show alert message
-const showAlert = (message) => {
-  ALERT_NODE.textContent = message;
+const showAlert = (errorText, alertText) => {
+  ALERT_NODE.textContent = alertText + errorText;
 
   document.body.append(ALERT_NODE);
 
@@ -20,5 +24,10 @@ const showAlert = (message) => {
 };
 
 // -----------------------------------------------------------------------
+const showLoadAlert = (message) => {
+  showAlert(message, AlertMessages.GET);
+};
+
+// -----------------------------------------------------------------------
 // EXPORTS
-export { showAlert };
+export { showLoadAlert };

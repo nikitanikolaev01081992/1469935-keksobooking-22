@@ -2,7 +2,7 @@ import { disableForms, enableAdForm, enableFilterForm } from './state.js';
 import { addFormHandlers, updateAddress } from './form.js';
 import { initMap, addMarkers, updateMarkers } from './map.js';
 import { loadData } from './api.js';
-import { adaptMarkersData, showAlert } from './util.js';
+import { adaptMarkersData, showLoadAlert } from './util.js';
 import { getData, prepareData, storeData } from './store.js';
 import { addFiltersFormHandlers } from './filters-form.js';
 import { getOfferNode } from './offers.js';
@@ -49,7 +49,7 @@ const onMapLoad = () => {
   enableAdForm();
 
   // get data for markers after map is loaded
-  loadData(onSuccessOffersLoad, showAlert);
+  loadData(onSuccessOffersLoad, showLoadAlert);
 };
 
 const onMainMarkerMoveEnd = (coords) => {

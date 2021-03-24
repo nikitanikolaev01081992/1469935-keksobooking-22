@@ -1,5 +1,5 @@
 import { hideElement, addNodeContent, addNodeSrc, getNode, queryNodes, renderItem } from './nodes.js';
-import { showAlert } from './alert.js';
+import { showLoadAlert } from './alert.js';
 
 //-----------------------------------------------------------------------
 const getRandomInt = (min, max) => {
@@ -97,7 +97,7 @@ export {
   getNode,
   queryNodes,
   renderItem,
-  showAlert,
+  showLoadAlert,
   adaptMarkersData,
   debounce
 };
